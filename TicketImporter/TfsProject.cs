@@ -1,0 +1,859 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Text;
+using Microsoft.TeamFoundation.Client;
+using Microsoft.TeamFoundation.Server;
+using Microsoft.TeamFoundation.VersionControl.Client;
+using Microsoft.TeamFoundation.WorkItemTracking.Client;
+using TicketImporter.Interface;
+using TrackProgress;
+
+namespace TicketImporter
+{
+    public class TfsProject : ITicketTarget
+    {
+        public TfsProject(string serverUri, string project)
+        {
+            this.serverUri = serverUri;
+            tfs = null;
+            this.project = project;
+            supportsHtml = false;
+            failedAttachments = false;
+            importSummary = new ImportSummary();
+
+            if (String.IsNullOrWhiteSpace(serverUri) == false)
+            {
+                tfs = TfsTeamProjectCollectionFactory.GetTeamProjectCollection(new Uri(serverUri));
+            }
+
+            if (tfs != null)
+            {
+                var workItemStore = tfs.GetService<WorkItemStore>();
+                fieldDefinitions = workItemStore.Projects[this.project].Store.FieldDefinitions;
+                if (fieldDefinitions.Contains("Description") == true)
+                {
+                    supportsHtml = (fieldDefinitions["Description"].FieldType == FieldType.Html);
+                }
+                tfsUsers = new TfsUsers(this);
+                tfsUsers.OnFailedToImpersonate += OnWarn;
+
+                areaPaths = new List<string>();
+                areaPaths.Add(this.project);
+                foreach (Node area in workItemStore.Projects[this.project].AreaRootNodes)
+                {
+                    areaPaths.Add(area.Path);
+                    foreach (Node item in area.ChildNodes)
+                    {
+                        areaPaths.Add(item.Path);
+                    }
+                }
+
+                processTemplateName = getProcessTemplateName(this.project);
+            }
+        }
+
+        public List<string> Teams
+        {
+            get
+            {
+                var teamNames = new List<string>();
+                if (fieldDefinitions != null &&
+                    fieldDefinitions.Contains("Team") == true)
+                {
+                    teamNames.AddRange(fieldDefinitions["Team"].AllowedValues.Cast<string>());
+                }
+                return teamNames;
+            }
+        }
+
+        public string Project
+        {
+            get { return project; }
+        }
+
+        public TfsTeamProjectCollection Tfs
+        {
+            get { return tfs; }
+        }
+
+        public WorkItemStore Store
+        {
+            get
+            {
+                var workItemStore = (WorkItemStore) tfs.GetService(typeof (WorkItemStore));
+                return workItemStore.Projects[project].Store;
+            }
+        }
+
+        public WorkItemTypeCollection WorkItemTypes
+        {
+            get { return Store.Projects[project].WorkItemTypes; }
+        }
+
+        public string ServerUri
+        {
+            get { return serverUri; }
+        }
+
+        public List<string> AreaPaths
+        {
+            get { return areaPaths; }
+        }
+
+        public IEnumerable<string> WorkItemFields
+        {
+            get
+            {
+                var prohibitedFields = new HashSet<CoreField>
+                {
+                    CoreField.AreaId,
+                    CoreField.AreaPath,
+                    CoreField.IterationId,
+                    CoreField.IterationPath,
+                    CoreField.CreatedBy,
+                    CoreField.CreatedDate
+                };
+
+                if (fieldDefinitions != null)
+                {
+                    foreach (FieldDefinition field in fieldDefinitions)
+                    {
+                        if (prohibitedFields.Contains((CoreField) field.Id) == false
+                            && field.IsComputed == false && field.IsEditable == true)
+                        {
+                            yield return field.Name;
+                        }
+                    }
+                }
+            }
+        }
+
+        public TfsUsers TfsUsers
+        {
+            get { return tfsUsers; }
+        }
+
+        private void OnWarn(string failure)
+        {
+            importSummary.Warnings.Add(failure);
+        }
+
+        public void AssignTicketsToTeam(string teamName)
+        {
+            assignedTeam = teamName;
+        }
+
+        public void AssignTicketsToAreaPath(string areaPath)
+        {
+            assignedAreaPath = areaPath;
+        }
+
+        public List<string> AllowedValuesForField(string fieldName)
+        {
+            var allowedValues = new List<string>();
+            if (fieldDefinitions != null)
+            {
+                foreach (FieldDefinition field in fieldDefinitions)
+                {
+                    if (field.AllowedValues != null &&
+                        (String.Compare(fieldName, field.Name, true) == 0 ||
+                         String.Compare(fieldName, field.ReferenceName, true) == 0))
+                    {
+                        allowedValues.AddRange(field.AllowedValues.Cast<string>());
+                        break;
+                    }
+                }
+            }
+            return allowedValues;
+        }
+
+        #region private class variables
+
+        private readonly TfsTeamProjectCollection tfs;
+        private readonly FieldDefinitionCollection fieldDefinitions;
+        private readonly string project;
+        private readonly string serverUri;
+        private string assignedTeam;
+        private TfsFieldMap tfsFieldMap;
+        private TfsStateMap tfsStateMap;
+        private TfsPriorityMap tfsPriorityMap;
+        private Dictionary<Ticket, WorkItem> newlyImported;
+        private Dictionary<string, WorkItem> previouslyImported;
+        private string externalReferenceTag;
+        private readonly TfsUsers tfsUsers;
+        private readonly bool supportsHtml;
+        private bool failedAttachments;
+        private readonly List<string> areaPaths;
+        private string assignedAreaPath;
+        private readonly string processTemplateName;
+        private readonly ImportSummary importSummary;
+
+        #endregion
+
+        #region Progress utility methods
+
+        private void onPercentComplete(int percentComplete)
+        {
+            if (this.OnPercentComplete != null)
+            {
+                this.OnPercentComplete(percentComplete);
+            }
+        }
+
+        private void onDetailedProcessing(string ticket)
+        {
+            if (OnDetailedProcessing != null)
+            {
+                OnDetailedProcessing(ticket);
+            }
+        }
+
+        #endregion
+
+        #region TFS Utility methods
+
+        private string getProcessTemplateName(string project)
+        {
+            var vcs = tfs.GetService<VersionControlServer>();
+            var ics = tfs.GetService<ICommonStructureService>();
+
+            var p = vcs.GetTeamProject(project);
+            string projectName = string.Empty,
+                projectState = String.Empty;
+            var templateId = 0;
+            ProjectProperty[] projectProperties = null;
+
+            ics.GetProjectProperties(p.ArtifactUri.AbsoluteUri, out projectName, out projectState, out templateId,
+                out projectProperties);
+
+            return projectProperties.Where(pt => pt.Name == "Process Template").Select(pt => pt.Value).FirstOrDefault();
+        }
+
+        private void assignToField(WorkItem workItem, string fieldName, object value)
+        {
+            if (workItem.Fields.Contains(fieldName) == true)
+            {
+                workItem.Fields[fieldName].Value = value;
+            }
+        }
+
+        private WorkItem toWorkItem(Ticket toImport)
+        {
+            WorkItemType workItemType;
+
+            var tfs_impersonated = tfsUsers.ImpersonateDefaultCreator();
+            if (tfsUsers.CanAddTicket(toImport.CreatedBy) == true)
+            {
+                tfs_impersonated = tfsUsers.Impersonate(toImport.CreatedBy);
+            }
+
+            var workItemStore = (WorkItemStore) tfs_impersonated.GetService(typeof (WorkItemStore));
+            var workItemTypes = workItemStore.Projects[project].WorkItemTypes;
+
+            switch (toImport.TicketType)
+            {
+                case Ticket.Type.Bug:
+                    workItemType = workItemTypes["Bug"];
+                    break;
+                case Ticket.Type.Decision:
+                    workItemType = workItemTypes["Decision"];
+                    break;
+                case Ticket.Type.Epic:
+                    workItemType = workItemTypes["Epic"];
+                    break;
+                case Ticket.Type.Impediment:
+                    workItemType = workItemTypes["Impediment"];
+                    break;
+                case Ticket.Type.Risk:
+                    workItemType = workItemTypes["Risk"];
+                    break;
+                case Ticket.Type.Story:
+                    workItemType = workItemTypes["Product Backlog Item"];
+                    break;
+                case Ticket.Type.TestCase:
+                    workItemType = workItemTypes["Test Case"];
+                    break;
+                default:
+                    workItemType = workItemTypes["Task"];
+                    break;
+            }
+
+            var workItem = new WorkItem(workItemType);
+
+            if (tfsFieldMap != null)
+            {
+                foreach (var field in tfsFieldMap.Fields)
+                {
+                    if (String.IsNullOrWhiteSpace(field.Value) == false)
+                    {
+                        assignToField(workItem, field.Key, field.Value);
+                    }
+                }
+            }
+
+            workItem.Title = toImport.Summary;
+            workItem.Description = toImport.Description;
+
+            assignToField(workItem, "Team", assignedTeam);
+            tfsUsers.AssignUser(toImport.AssignedTo, workItem);
+
+            assignToField(workItem, "Story Points", toImport.StoryPoints);
+            assignToField(workItem, "Effort", toImport.StoryPoints);
+            workItem.AreaPath = (string.IsNullOrWhiteSpace(assignedAreaPath) ? project : assignedAreaPath);
+            assignToField(workItem, "External Reference", toImport.ID);
+
+            if (toImport.HasUrl == true)
+            {
+                try
+                {
+                    var hl = new Hyperlink(toImport.Url);
+                    hl.Comment = String.Format("{0} [{1}]", externalReferenceTag, toImport.ID);
+                    workItem.Links.Add(hl);
+                }
+                catch
+                {
+                    /*Do nothing..*/
+                }
+            }
+
+            var c = new StringBuilder();
+            foreach (var comment in toImport.Comments)
+            {
+                var body = String.Format("<i>{0}</i></br>Created by {1} on the {2}.<br>",
+                    comment.Body.Replace(Environment.NewLine, "<br>"),
+                    comment.Author.DisplayName,
+                    comment.CreatedOn.ToShortDateString());
+                if (comment.UpdatedLater == true)
+                {
+                    body = String.Format("{0}<br>(Last updated on the {1}).<br>", body,
+                        comment.Updated.ToShortDateString());
+                }
+                c.Append(body);
+            }
+
+            if (c.Length > 0)
+            {
+                c.Append("<br>");
+            }
+
+            c.Append(
+                string.Format("<u><b>Additional {0} information</b></u><br>", externalReferenceTag));
+
+            var rows = new List<Tuple<string, string>>
+            {
+                new Tuple<string, string>("Ticket",
+                    string.Format("<a href=\"{0}\">{1}</a>", toImport.Url, toImport.ID + " - " + toImport.Summary)),
+                new Tuple<string, string>("Created by ", toImport.CreatedBy.DisplayName),
+                new Tuple<string, string>("Created on ", toImport.CreatedOn.ToString(CultureInfo.InvariantCulture))
+            };
+            if (toImport.TicketState == Ticket.State.Done)
+            {
+                rows.Add(new Tuple<string, string>("Closed on ", toImport.ClosedOn.ToString()));
+            }
+            if (string.IsNullOrWhiteSpace(toImport.Project) == false)
+            {
+                rows.Add(new Tuple<string, string>("Belonged To", toImport.Project));
+            }
+
+            c.Append("<table style=\"width:100%\">");
+            foreach (var row in rows)
+            {
+                c.Append(string.Format("<tr><td><b>{0}</b></td><td>{1}</td></tr>", row.Item1, row.Item2));
+            }
+            c.Append("</table>");
+
+            workItem.History = c.ToString();
+
+            assignToField(workItem, tfsPriorityMap.PriorityField, tfsPriorityMap[toImport.Priority]);
+
+            return workItem;
+        }
+
+        #endregion
+
+        #region ITicketTarget Interface
+
+        public string Target
+        {
+            get { return "TFS"; }
+        }
+
+        public PercentComplete OnPercentComplete { set; get; }
+
+        public DetailedProcessing OnDetailedProcessing { set; get; }
+
+        public bool StartImport(string externalReferenceTag)
+        {
+            importSummary.Clear();
+            importSummary.Start = DateTime.Now;
+            importSummary.TargetDetails.Add(string.Format("TFS Server           : {0}", serverUri));
+            importSummary.TargetDetails.Add(string.Format("Able to impersonate? : {0}",
+                (tfsUsers.CanImpersonate ? "Yes" : "No")));
+            importSummary.TargetDetails.Add(string.Format("Selected Project     : {0}", project));
+            importSummary.TargetDetails.Add(string.Format("Template in use      : {0}", processTemplateName));
+            failedAttachments = false;
+
+            var workItemStore = (WorkItemStore) tfs.GetService(typeof (WorkItemStore));
+            var ableToAdd = workItemStore.Projects[project].HasWorkItemWriteRights;
+
+            if (ableToAdd == true)
+            {
+                this.externalReferenceTag = externalReferenceTag;
+                tfsFieldMap = new TfsFieldMap(this);
+                tfsStateMap = new TfsStateMap(this);
+                tfsPriorityMap = new TfsPriorityMap();
+                newlyImported = new Dictionary<Ticket, WorkItem>();
+                findPreviouslyImportedTickets();
+            }
+            else
+            {
+                importSummary.Errors.Add(
+                    string.Format(
+                        "You don't have permission to add work-items to project '{0}'. Contact your local TFS Administrator.",
+                        project));
+            }
+            return ableToAdd;
+        }
+
+        public bool CheckTicket(Ticket toAdd, out IFailedTicket failure)
+        {
+            failure = null;
+            var okToAdd = true;
+            if (previouslyImported.ContainsKey(toAdd.ID) == false)
+            {
+                var validationErrors = toWorkItem(toAdd).Validate();
+                okToAdd = (validationErrors.Count == 0 ? true : false);
+                if (okToAdd == false)
+                {
+                    failure = new TfsFailedValidation(toAdd, validationErrors);
+                }
+            }
+            return okToAdd;
+        }
+
+        public bool AddTicket(Ticket toAdd)
+        {
+            var addedOk = false;
+            var ticketSummary = toAdd.ID + " - " + toAdd.Summary;
+            onDetailedProcessing(ticketSummary);
+
+            if (previouslyImported.ContainsKey(toAdd.ID) == false)
+            {
+                var workItem = toWorkItem(toAdd);
+                var rejectedAttachments = new List<string>();
+
+                foreach (var attachment in toAdd.Attachments)
+                {
+                    if (attachment.Downloaded == true)
+                    {
+                        var toAttach =
+                            new Microsoft.TeamFoundation.WorkItemTracking.Client.Attachment(attachment.Source);
+                        workItem.Attachments.Add(toAttach);
+                    }
+                }
+
+                var attempts = workItem.AttachedFileCount + 1;
+                do
+                {
+                    try
+                    {
+                        workItem.Save(SaveFlags.MergeAll);
+                        addedOk = true;
+                    }
+                    catch (FileAttachmentException attachmentException)
+                    {
+                        var rejectedFile = attachmentException.SourceAttachment.Name;
+                        rejectedAttachments.Add(string.Format("{0} ({1})", rejectedFile, attachmentException.Message));
+
+                        workItem.Attachments.Clear();
+                        foreach (var attachment in toAdd.Attachments)
+                        {
+                            if (string.Compare(rejectedFile, attachment.FileName) != 0 && attachment.Downloaded == true)
+                            {
+                                var toAttach =
+                                    new Microsoft.TeamFoundation.WorkItemTracking.Client.Attachment(attachment.Source);
+                                workItem.Attachments.Add(toAttach);
+                            }
+                        }
+                        attempts--;
+                    }
+                    catch (Exception generalException)
+                    {
+                        importSummary.Errors.Add(string.Format("Failed to add work item '{0}'.", ticketSummary));
+                        importSummary.Errors.Add(generalException.Message);
+                        break;
+                    }
+                } while (addedOk == false && attempts > 0);
+
+                if (addedOk == true)
+                {
+                    newlyImported[toAdd] = workItem;
+                    if (rejectedAttachments.Count > 0)
+                    {
+                        importSummary.Warnings.Add(
+                            string.Format("Failed to attach the following item(s) to {0} - \"{1}\"", workItem.Id,
+                                workItem.Title));
+                        foreach (var file in rejectedAttachments)
+                        {
+                            importSummary.Warnings.Add(string.Format(" - {0}", file));
+                        }
+                        failedAttachments = true;
+                    }
+                }
+            }
+            else
+            {
+                addedOk = true;
+            }
+
+            return addedOk;
+        }
+
+        private string generateBatchFile()
+        {
+            try
+            {
+                string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
+                    csvPath = Path.Combine(path, "Imported_WorkItem_Ids.csv"),
+                    batchPath = Path.Combine(path, "UndoImport.bat"),
+                    exePath = Path.Combine(path, "DeleteWorkItems.exe");
+
+                using (TextWriter csvFile = File.CreateText(csvPath))
+                {
+                    var firsId = true;
+                    foreach (var wit in newlyImported.Values)
+                    {
+                        csvFile.Write("{0}{1}", (firsId ? "" : ","), wit.Id);
+                        firsId = false;
+                    }
+                }
+
+                using (TextWriter batchFile = File.CreateText(batchPath))
+                {
+                    var tfsProject = serverUri + "/" + project;
+                    batchFile.WriteLine("\"{0}\" /Project={1} /Ids=\"{2}\"", exePath, tfsProject, csvPath);
+                }
+                return batchPath;
+            }
+            catch (Exception ex)
+            {
+                importSummary.Warnings.Add(
+                    string.Format("Failed to generate batchfile for removing imported tickets ({0}).", ex.Message));
+                return "";
+            }
+        }
+
+        private WorkItem findWorkItem(string sourceId)
+        {
+            WorkItem workItem = null;
+            foreach (var ticket in newlyImported)
+            {
+                if (String.Compare(ticket.Key.ID, sourceId) == 0)
+                {
+                    workItem = ticket.Value;
+                    break;
+                }
+            }
+            if (workItem == null)
+            {
+                previouslyImported.TryGetValue(sourceId, out workItem);
+            }
+            return workItem;
+        }
+
+        private void findPreviouslyImportedTickets()
+        {
+            previouslyImported = new Dictionary<string, WorkItem>();
+            var workItemStore = (WorkItemStore) tfs.GetService(typeof (WorkItemStore));
+            var queryResults =
+                workItemStore.Query("Select [ID] From WorkItems where [Hyperlink Count] > 0");
+            if (queryResults.Count > 0)
+            {
+                var externalRef = externalReferenceTag + " [";
+                var progressNotifer = new ProgressNotifier(OnPercentComplete, queryResults.Count);
+                foreach (WorkItem workItem in queryResults)
+                {
+                    var hyperLinks = workItem.Links.OfType<Hyperlink>();
+                    foreach (var link in hyperLinks)
+                    {
+                        if (link.Comment.IndexOf(externalRef) == 0)
+                        {
+                            var toExtract = (link.Comment.Length - externalRef.Length) - 1;
+                            var sourceId = link.Comment.Substring(externalRef.Length, toExtract);
+                            onDetailedProcessing(string.Format("Retrieving previously imported tickets ({0}).", sourceId));
+                            previouslyImported[sourceId] = workItem;
+                            break;
+                        }
+                        progressNotifer.UpdateProgress();
+                    }
+                }
+            }
+        }
+
+        #region UpdateWorkitem utility methods
+
+        private void updateWorkItemState(Ticket source, WorkItem workItem)
+        {
+            var statesTosave = new List<string>();
+
+            if (source.TicketState != Ticket.State.Done)
+            {
+                if (source.TicketState == Ticket.State.InProgress)
+                {
+                    statesTosave.Add(tfsStateMap.GetSelectedInProgressStateFor(workItem.Type.Name));
+                }
+                else if (source.TicketState == Ticket.State.Todo || source.TicketState == Ticket.State.Unknown)
+                {
+                    statesTosave.Add(tfsStateMap.GetSelectedApprovedStateFor(workItem.Type.Name));
+                }
+
+                if (importSummary.OpenTickets.ContainsKey(source.TicketType) == false)
+                {
+                    importSummary.OpenTickets.Add(source.TicketType, 1);
+                }
+                else
+                {
+                    importSummary.OpenTickets[source.TicketType]++;
+                }
+            }
+            else
+            {
+                statesTosave = tfsStateMap.GetStateTransistionsToDoneFor(workItem.Type.Name);
+            }
+
+            foreach (var stateToSave in statesTosave)
+            {
+                workItem.State = stateToSave;
+
+                var validationErrors = workItem.Validate();
+                if (validationErrors.Count == 0)
+                {
+                    workItem.Save(SaveFlags.MergeLinks);
+                }
+                else
+                {
+                    var waring = string.Format("Failed to set state for Work-item {0} - \"{1}\"", workItem.Id,
+                        workItem.Title);
+                    importSummary.Warnings.Add(waring);
+                    var failure = new TfsFailedValidation(source, validationErrors);
+                    importSummary.Warnings.Add(" " + failure.Summary);
+                    foreach (var issue in failure.Issues)
+                    {
+                        var fieldInTrouble = string.Format("  * {0} - {1} (Value: {2})", issue.Name, issue.Problem,
+                            issue.Value);
+                        importSummary.Warnings.Add(fieldInTrouble);
+                        foreach (var info in issue.Info)
+                        {
+                            importSummary.Warnings.Add("  * " + info);
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+
+        private void updateWorkItem(Ticket source, WorkItem workItem)
+        {
+            var ticketTitle = workItem.Id + " - " + workItem.Title;
+            onDetailedProcessing(ticketTitle);
+
+            if (source.HasParent == true)
+            {
+                var parentWorkItem = findWorkItem(source.Parent);
+                if (parentWorkItem != null)
+                {
+                    try
+                    {
+                        var workItemStore = (WorkItemStore) tfs.GetService(typeof (WorkItemStore));
+                        var linkType = workItemStore.WorkItemLinkTypes[CoreLinkTypeReferenceNames.Hierarchy];
+                        parentWorkItem.Links.Add(new WorkItemLink(linkType.ForwardEnd, workItem.Id));
+                    }
+                    catch (Exception linkException)
+                    {
+                        importSummary.Warnings.Add(string.Format("Failed to update parent link for '{0}'.", ticketTitle));
+                        importSummary.Warnings.Add(linkException.Message);
+                    }
+                }
+            }
+
+            if (source.HasLinks == true)
+            {
+                var workItemStore = (WorkItemStore) tfs.GetService(typeof (WorkItemStore));
+                if (workItemStore.WorkItemLinkTypes.Contains("System.LinkTypes.Related") == true)
+                {
+                    var linkType = workItemStore.WorkItemLinkTypes["System.LinkTypes.Related"];
+                    var linkTypeEnd = workItemStore.WorkItemLinkTypes.LinkTypeEnds[linkType.ForwardEnd.Name];
+                    foreach (var link in source.Links)
+                    {
+                        var linkedWorkItem = findWorkItem(link.LinkedTo);
+                        if (linkedWorkItem != null)
+                        {
+                            try
+                            {
+                                var relatedLink = new RelatedLink(linkTypeEnd, linkedWorkItem.Id);
+                                relatedLink.Comment = link.LinkName;
+                                workItem.Links.Add(relatedLink);
+                            }
+                            catch (Exception linkException)
+                            {
+                                if (linkException.Message.Contains("TF237099") == false)
+                                {
+                                    importSummary.Warnings.Add(string.Format("Failed to update links for '{0}'.",
+                                        ticketTitle));
+                                    importSummary.Warnings.Add(linkException.Message);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (string.IsNullOrWhiteSpace(source.Epic) == false)
+            {
+                var workItemStore = (WorkItemStore) tfs.GetService(typeof (WorkItemStore));
+                var feature = findWorkItem(source.Epic);
+                if (feature != null)
+                {
+                    try
+                    {
+                        var linkType = workItemStore.WorkItemLinkTypes["System.LinkTypes.Hierarchy"];
+                        var linkTypeEnd = workItemStore.WorkItemLinkTypes.LinkTypeEnds[linkType.ReverseEnd.Name];
+                        var relatedLink = new RelatedLink(linkTypeEnd, feature.Id);
+                        relatedLink.Comment = string.Format("A member of Epic '{0} - {1}'.", feature.Id, feature.Title);
+                        workItem.Links.Add(relatedLink);
+                    }
+                    catch (Exception linkException)
+                    {
+                        if (linkException.Message.Contains("TF237099") == false)
+                        {
+                            importSummary.Warnings.Add(string.Format("Failed to update epic link for '{0}'.",
+                                ticketTitle));
+                            importSummary.Warnings.Add(linkException.Message);
+                        }
+                    }
+                }
+            }
+
+            if (workItem.IsDirty == true)
+            {
+                try
+                {
+                    workItem.Save(SaveFlags.MergeLinks);
+                }
+                catch (Exception ex)
+                {
+                    importSummary.Errors.Add(
+                        string.Format("Failed to update work item '{0} - {1}'.", workItem.Id, workItem.Title));
+                    importSummary.Errors.Add(ex.Message);
+                    return;
+                }
+            }
+
+            updateWorkItemState(source, workItem);
+        }
+
+        #endregion
+
+        public void EndImport()
+        {
+            var batchFile = "";
+            if (newlyImported.Count > 0)
+            {
+                var progressNotifer = new ProgressNotifier(OnPercentComplete, (newlyImported.Count + 3));
+
+                // Batch save WorkItems to TFS
+                progressNotifer.UpdateProgress();
+                var workItemStore = (WorkItemStore) tfs.GetService(typeof (WorkItemStore));
+
+                var batch = new WorkItem[newlyImported.Count];
+                newlyImported.Values.CopyTo(batch, 0);
+
+                // Unfortunately once created we need to revisit & update TFS ticket state.
+                // (Seemingly you cannot create a new TFS ticket with a status of "Closed", "In-progress" etc).
+                foreach (var item in newlyImported)
+                {
+                    updateWorkItem(item.Key, item.Value);
+                    progressNotifer.UpdateProgress();
+                }
+                progressNotifer.UpdateProgress();
+
+                batchFile = generateBatchFile();
+                TfsUsers.ReleaseImpersonations();
+                progressNotifer.UpdateProgress();
+            }
+
+            if (tfsUsers.CanImpersonate == false || tfsUsers.FailedImpersonations.Count > 0)
+            {
+                if (importSummary.Warnings.Count > 0)
+                {
+                    importSummary.Warnings.Add(Environment.NewLine);
+                }
+                importSummary.Warnings.Add("Impersonation");
+                importSummary.Warnings.Add("-------------");
+            }
+
+            if (tfsUsers.CanImpersonate == false)
+            {
+                importSummary.Warnings.Add(
+                    "You don't have impersonation rights enabled. Hence all tickets were created under your name.");
+            }
+            else if (tfsUsers.FailedImpersonations.Count > 0)
+            {
+                importSummary.Warnings.Add(string.Format("TFS failed to impersonate the following {0} users.",
+                    externalReferenceTag));
+                foreach (var failedUser in tfsUsers.FailedImpersonations)
+                {
+                    importSummary.Warnings.Add(string.Format("* {0}", failedUser.DisplayName));
+                }
+            }
+
+            if (tfsUsers.NoRightsToAdd.Count > 0)
+            {
+                if (importSummary.Warnings.Count > 0)
+                {
+                    importSummary.Warnings.Add(Environment.NewLine);
+                }
+                importSummary.Warnings.Add("User Rights");
+                importSummary.Warnings.Add("-----------");
+                importSummary.Warnings.Add(
+                    string.Format("The following {0} users do not have rights to add tickets in {1}.",
+                        externalReferenceTag, Target));
+                importSummary.Warnings.Add(string.Format("Default ticket creator '{0}' used instead.",
+                    tfsUsers.CurrentDefaultCreator));
+                foreach (var failedUser in tfsUsers.NoRightsToAdd)
+                {
+                    importSummary.Warnings.Add(string.Format("* {0}", failedUser.DisplayName));
+                }
+            }
+
+            importSummary.End = DateTime.Now;
+            importSummary.Imported = newlyImported.Count;
+            importSummary.PreviouslyImported = previouslyImported.Count;
+            if (failedAttachments == true)
+            {
+                importSummary.Notes.Add(
+                    "Default max. attachment size in TFS is 4MB. Contact your TFS Administrator to expand this limit if required.");
+            }
+            if (string.IsNullOrWhiteSpace(batchFile) == false)
+            {
+                importSummary.Notes.Add(string.Format("To undo import run the following batch file: '{0}'.", batchFile));
+            }
+        }
+
+        public bool SupportsHtml
+        {
+            get { return supportsHtml; }
+        }
+
+        public ImportSummary ImportSummary
+        {
+            get { return importSummary; }
+        }
+
+        #endregion
+    }
+}

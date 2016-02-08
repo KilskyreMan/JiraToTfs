@@ -1,0 +1,118 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProjectGuid>{E71EAD9C-A44E-440A-97B5-6BFDE17CB7AD}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>TicketImporter</RootNamespace>
+    <AssemblyName>TicketImporter</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="log4net">
+      <HintPath>..\log4net\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.TeamFoundation.Client, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.TeamFoundation.Common, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.TeamFoundation.VersionControl.Client, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.TeamFoundation.WorkItemTracking.Client, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="RestSharp">
+      <HintPath>RestSharp\RestSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AdvancedSettings.cs" />
+    <Compile Include="ImportSummary.cs" />
+    <Compile Include="TechTalk.JiraRestClient\Attachment.cs" />
+    <Compile Include="TechTalk.JiraRestClient\ChangeLog.cs" />
+    <Compile Include="TechTalk.JiraRestClient\ChangeLogContainer.cs" />
+    <Compile Include="TechTalk.JiraRestClient\Comment.cs" />
+    <Compile Include="TechTalk.JiraRestClient\CommentsContainer.cs" />
+    <Compile Include="TechTalk.JiraRestClient\Compatibility.cs" />
+    <Compile Include="TechTalk.JiraRestClient\History.cs" />
+    <Compile Include="TechTalk.JiraRestClient\IJiraClient.cs" />
+    <Compile Include="TechTalk.JiraRestClient\Issue.cs" />
+    <Compile Include="TechTalk.JiraRestClient\IssueContainer.cs" />
+    <Compile Include="TechTalk.JiraRestClient\IssueFields.cs" />
+    <Compile Include="TechTalk.JiraRestClient\IssueLink.cs" />
+    <Compile Include="TechTalk.JiraRestClient\IssueRef.cs" />
+    <Compile Include="TechTalk.JiraRestClient\IssueType.cs" />
+    <Compile Include="TechTalk.JiraRestClient\JiraClient.cs" />
+    <Compile Include="TechTalk.JiraRestClient\JiraClientException.cs" />
+    <Compile Include="TechTalk.JiraRestClient\JiraUser.cs" />
+    <Compile Include="TechTalk.JiraRestClient\Priority.cs" />
+    <Compile Include="TechTalk.JiraRestClient\ParentProject.cs" />
+    <Compile Include="TechTalk.JiraRestClient\RemoteLink.cs" />
+    <Compile Include="TechTalk.JiraRestClient\RemoteLinkResult.cs" />
+    <Compile Include="TechTalk.JiraRestClient\RenderedFields.cs" />
+    <Compile Include="TechTalk.JiraRestClient\ServerInfo.cs" />
+    <Compile Include="TechTalk.JiraRestClient\Status.cs" />
+    <Compile Include="TechTalk.JiraRestClient\Timetracking.cs" />
+    <Compile Include="TechTalk.JiraRestClient\Transition.cs" />
+    <Compile Include="TechTalk.JiraRestClient\TransitionsContainer.cs" />
+    <Compile Include="TfsIssue.cs" />
+    <Compile Include="Interface\IAttachment.cs" />
+    <Compile Include="Interface\IFailedTicket.cs" />
+    <Compile Include="Interface\ITicketSource.cs" />
+    <Compile Include="Interface\ITicketTarget.cs" />
+    <Compile Include="JiraProject.cs" />
+    <Compile Include="JiraTypeMap.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SettingsStore.cs" />
+    <Compile Include="TfsFailedValidation.cs" />
+    <Compile Include="TfsFieldMap.cs" />
+    <Compile Include="TfsPriorityMap.cs" />
+    <Compile Include="TfsProject.cs" />
+    <Compile Include="TfsStateMap.cs" />
+    <Compile Include="TfsUsers.cs" />
+    <Compile Include="Ticket.cs" />
+    <Compile Include="TicketImportAgent.cs" />
+    <Compile Include="User.cs" />
+    <Compile Include="Xml.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Progress\Progress.csproj">
+      <Project>{a514cfa1-79a5-4acc-84a9-e8d7ad6ed1c6}</Project>
+      <Name>Progress</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="TechTalk.JiraRestClient\TechTalk.JiraRestClient-Licence.txt" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
