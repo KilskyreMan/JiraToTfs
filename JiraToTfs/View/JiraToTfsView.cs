@@ -196,7 +196,7 @@ namespace JiraToTfs.View
             CloseBtn.Enabled = ImportBtn.Enabled = enable;
             jiraServer.Enabled = jiraUserName.Enabled = jiraProject.Enabled = jiraPassword.Enabled = enable;
             selectProjectBtn.Enabled = enable;
-            jiraMappingsBtn.Enabled = enable;
+            advancedSettingsBtn.Enabled = enable;
             tfsTeams.Enabled = enable;
             areaPaths.Enabled = enable;
         }

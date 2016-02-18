@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using TechTalk.JiraRestClient;
 using TicketImporter.Interface;
@@ -58,9 +59,9 @@ namespace TicketImporter
 
         public DetailedProcessing OnDetailedProcessing { set; get; }
 
-        public IEnumerable<Ticket> Tickets()
+        public IEnumerable<Ticket> Tickets(IAvailableTicketTypes availableTypes)
         {
-            var map = new JiraTypeMap(this);
+            var map = new JiraTypeMap(this, availableTypes);
             foreach (var jiraKey in jira.EnumerateIssues(jiraProject))
             {
                 var issueRef = new IssueRef
@@ -97,7 +98,7 @@ namespace TicketImporter
                 ticket.Parent = jiraTicket.fields.parent.key;
 
                 ticket.Description = jiraTicket.fields.description;
-                if (PreferHtml == true &&
+                if (PreferHtml &&
                     string.IsNullOrWhiteSpace(jiraTicket.renderedFields.description) == false)
                 {
                     ticket.Description = jiraTicket.renderedFields.description;
@@ -173,7 +174,7 @@ namespace TicketImporter
 
                     // Jira can have more than one of the same file attached to a ticket ...
                     var nextCopy = 0;
-                    if (downloaded.ContainsKey(attachment.FileName) == true)
+                    if (downloaded.ContainsKey(attachment.FileName))
                     {
                         nextCopy = downloaded[attachment.FileName];
                         downloadedName = string.Format("{0}_{1}{2}", name, nextCopy, extension);
@@ -203,10 +204,7 @@ namespace TicketImporter
             {
                 if (jira != null)
                 {
-                    foreach (var type in jira.GetIssueTypes())
-                    {
-                        ticketTypes.Add(type.name);
-                    }
+                    ticketTypes.AddRange(jira.GetIssueTypes().Select(type => type.name));
                 }
             }
             catch

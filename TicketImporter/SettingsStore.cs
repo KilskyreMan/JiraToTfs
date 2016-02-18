@@ -26,7 +26,7 @@ namespace TicketImporter
         public static Dictionary<String, String> Load(string key)
         {
             var mappings = new Dictionary<String, String>();
-            if (File.Exists(pathToStore) == true)
+            if (File.Exists(pathToStore))
             {
                 var xmlTree = XElement.Load(pathToStore);
                 var element = xmlTree.Element(key);
@@ -44,10 +44,10 @@ namespace TicketImporter
             try
             {
                 var toSave = new XElement(key, formatKeys(source).Select(kv => new XElement(kv.Key, kv.Value)));
-                if (toSave.HasElements == true)
+                if (toSave.HasElements)
                 {
                     var xmlTree = new XElement("Mappings", toSave);
-                    if (File.Exists(pathToStore) == true)
+                    if (File.Exists(pathToStore))
                     {
                         xmlTree = XElement.Load(pathToStore);
                         var toReplace = xmlTree.Element(key);

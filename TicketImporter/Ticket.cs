@@ -64,19 +64,6 @@ namespace TicketImporter
             Done
         };
 
-        public enum Type
-        {
-            Unknown,
-            Epic,
-            Story,
-            Task,
-            Bug,
-            Risk,
-            Decision,
-            TestCase,
-            Impediment
-        };
-
         public User AssignedTo;
         public List<Attachment> Attachments;
         public DateTime ClosedOn;
@@ -96,14 +83,14 @@ namespace TicketImporter
         public int StoryPoints;
         public string Summary;
         public State TicketState;
-        public Type TicketType;
+        public string TicketType;
         public string Url;
 
         public Ticket()
         {
             ID = "";
             Description = "";
-            TicketType = Type.Unknown;
+            TicketType = "";
             TicketState = State.Unknown;
             Comments = new List<Comment>();
             ExternalReference = "";

@@ -91,7 +91,7 @@ namespace TicketImporter
 
         public void AssignUser(User toAssign, WorkItem workItem)
         {
-            if (toAssign.HasIdentity == true)
+            if (toAssign.HasIdentity)
             {
                 var assignedUser = (string) workItem[CoreField.AssignedTo];
 
@@ -99,7 +99,7 @@ namespace TicketImporter
                 foreach (string tfsUser in workItem.Fields[CoreField.AssignedTo].AllowedValues)
                 {
                     matched = toAssign.IsSameUser(tfsUser);
-                    if (matched == true)
+                    if (matched)
                     {
                         assignedUser = tfsUser;
                         break;
@@ -161,7 +161,7 @@ namespace TicketImporter
             TfsTeamProjectCollection impersonated_User = null;
             try
             {
-                if (canImpersonate == true)
+                if (canImpersonate)
                 {
                     if (userToImpersonate.IsSameUser(tfsProject.Tfs.AuthorizedIdentity.DisplayName) == false)
                     {
@@ -171,8 +171,8 @@ namespace TicketImporter
                             var tfsUser = defaultCreator;
                             foreach (var windowsUser in tfsUsers)
                             {
-                                if (userToImpersonate.IsSameUser(windowsUser.GetAttribute("Mail", "")) == true
-                                    || userToImpersonate.IsSameUser(windowsUser.DisplayName) == true)
+                                if (userToImpersonate.IsSameUser(windowsUser.GetAttribute("Mail", ""))
+                                    || userToImpersonate.IsSameUser(windowsUser.DisplayName))
                                 {
                                     tfsUser = windowsUser.DisplayName;
                                     break;

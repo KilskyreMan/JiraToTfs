@@ -48,7 +48,7 @@
             this.label8 = new System.Windows.Forms.Label();
             this.tfsTeams = new System.Windows.Forms.ComboBox();
             this.detailedProgress = new System.Windows.Forms.Label();
-            this.jiraMappingsBtn = new System.Windows.Forms.LinkLabel();
+            this.advancedSettingsBtn = new System.Windows.Forms.LinkLabel();
             this.label9 = new System.Windows.Forms.Label();
             this.areaPaths = new System.Windows.Forms.ComboBox();
             this.label10 = new System.Windows.Forms.Label();
@@ -60,7 +60,7 @@
             // 
             // ImportBtn
             // 
-            this.ImportBtn.Location = new System.Drawing.Point(109, 324);
+            this.ImportBtn.Location = new System.Drawing.Point(109, 330);
             this.ImportBtn.Name = "ImportBtn";
             this.ImportBtn.Size = new System.Drawing.Size(253, 24);
             this.ImportBtn.TabIndex = 10;
@@ -71,7 +71,7 @@
             // CloseBtn
             // 
             this.CloseBtn.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.CloseBtn.Location = new System.Drawing.Point(353, 422);
+            this.CloseBtn.Location = new System.Drawing.Point(353, 430);
             this.CloseBtn.Name = "CloseBtn";
             this.CloseBtn.Size = new System.Drawing.Size(75, 23);
             this.CloseBtn.TabIndex = 11;
@@ -81,7 +81,7 @@
             // 
             // selectProjectBtn
             // 
-            this.selectProjectBtn.Location = new System.Drawing.Point(368, 175);
+            this.selectProjectBtn.Location = new System.Drawing.Point(368, 155);
             this.selectProjectBtn.Name = "selectProjectBtn";
             this.selectProjectBtn.Size = new System.Drawing.Size(60, 23);
             this.selectProjectBtn.TabIndex = 6;
@@ -92,7 +92,7 @@
             // tfsProject
             // 
             this.tfsProject.Enabled = false;
-            this.tfsProject.Location = new System.Drawing.Point(109, 177);
+            this.tfsProject.Location = new System.Drawing.Point(109, 157);
             this.tfsProject.Name = "tfsProject";
             this.tfsProject.Size = new System.Drawing.Size(253, 20);
             this.tfsProject.TabIndex = 5;
@@ -101,7 +101,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(24, 181);
+            this.label2.Location = new System.Drawing.Point(24, 161);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(70, 13);
             this.label2.TabIndex = 5;
@@ -173,7 +173,7 @@
             // 
             this.label6.AutoSize = true;
             this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold);
-            this.label6.Location = new System.Drawing.Point(16, 152);
+            this.label6.Location = new System.Drawing.Point(16, 132);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(182, 13);
             this.label6.TabIndex = 16;
@@ -199,7 +199,7 @@
             // progressMessage
             // 
             this.progressMessage.ForeColor = System.Drawing.Color.Red;
-            this.progressMessage.Location = new System.Drawing.Point(106, 362);
+            this.progressMessage.Location = new System.Drawing.Point(106, 370);
             this.progressMessage.Name = "progressMessage";
             this.progressMessage.Size = new System.Drawing.Size(332, 18);
             this.progressMessage.TabIndex = 18;
@@ -207,7 +207,7 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(24, 237);
+            this.label8.Location = new System.Drawing.Point(24, 217);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(84, 13);
             this.label8.TabIndex = 19;
@@ -217,7 +217,7 @@
             // 
             this.tfsTeams.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.tfsTeams.FormattingEnabled = true;
-            this.tfsTeams.Location = new System.Drawing.Point(109, 233);
+            this.tfsTeams.Location = new System.Drawing.Point(109, 213);
             this.tfsTeams.Name = "tfsTeams";
             this.tfsTeams.Size = new System.Drawing.Size(253, 21);
             this.tfsTeams.TabIndex = 8;
@@ -226,37 +226,37 @@
             // detailedProgress
             // 
             this.detailedProgress.ForeColor = System.Drawing.Color.Blue;
-            this.detailedProgress.Location = new System.Drawing.Point(106, 382);
+            this.detailedProgress.Location = new System.Drawing.Point(106, 390);
             this.detailedProgress.Name = "detailedProgress";
             this.detailedProgress.Size = new System.Drawing.Size(332, 26);
             this.detailedProgress.TabIndex = 21;
             // 
-            // jiraMappingsBtn
+            // advancedSettingsBtn
             // 
-            this.jiraMappingsBtn.AutoSize = true;
-            this.jiraMappingsBtn.Location = new System.Drawing.Point(106, 122);
-            this.jiraMappingsBtn.Name = "jiraMappingsBtn";
-            this.jiraMappingsBtn.Size = new System.Drawing.Size(97, 13);
-            this.jiraMappingsBtn.TabIndex = 4;
-            this.jiraMappingsBtn.TabStop = true;
-            this.jiraMappingsBtn.Text = "&Advanced Settings";
-            this.jiraMappingsBtn.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.jiraMappingsBtn_LinkClicked);
+            this.advancedSettingsBtn.AutoSize = true;
+            this.advancedSettingsBtn.Location = new System.Drawing.Point(109, 304);
+            this.advancedSettingsBtn.Name = "advancedSettingsBtn";
+            this.advancedSettingsBtn.Size = new System.Drawing.Size(97, 13);
+            this.advancedSettingsBtn.TabIndex = 4;
+            this.advancedSettingsBtn.TabStop = true;
+            this.advancedSettingsBtn.Text = "&Advanced Settings";
+            this.advancedSettingsBtn.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.jiraMappingsBtn_LinkClicked);
             // 
             // label9
             // 
             this.label9.AutoSize = true;
             this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold);
-            this.label9.Location = new System.Drawing.Point(16, 279);
+            this.label9.Location = new System.Drawing.Point(16, 255);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(88, 13);
+            this.label9.Size = new System.Drawing.Size(70, 13);
             this.label9.TabIndex = 23;
-            this.label9.Text = "Import Tickets";
+            this.label9.Text = "Lets Import";
             // 
             // areaPaths
             // 
             this.areaPaths.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.areaPaths.FormattingEnabled = true;
-            this.areaPaths.Location = new System.Drawing.Point(109, 204);
+            this.areaPaths.Location = new System.Drawing.Point(109, 184);
             this.areaPaths.Name = "areaPaths";
             this.areaPaths.Size = new System.Drawing.Size(253, 21);
             this.areaPaths.TabIndex = 7;
@@ -265,7 +265,7 @@
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(24, 208);
+            this.label10.Location = new System.Drawing.Point(24, 188);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(56, 13);
             this.label10.TabIndex = 24;
@@ -274,7 +274,7 @@
             // includeAttachments
             // 
             this.includeAttachments.AutoSize = true;
-            this.includeAttachments.Location = new System.Drawing.Point(109, 300);
+            this.includeAttachments.Location = new System.Drawing.Point(109, 278);
             this.includeAttachments.Name = "includeAttachments";
             this.includeAttachments.Size = new System.Drawing.Size(123, 17);
             this.includeAttachments.TabIndex = 9;
@@ -284,7 +284,7 @@
             // pleaseWaitSpinner
             // 
             this.pleaseWaitSpinner.Image = global::JiraToTfs.Properties.Resources.pleasewait;
-            this.pleaseWaitSpinner.Location = new System.Drawing.Point(59, 360);
+            this.pleaseWaitSpinner.Location = new System.Drawing.Point(59, 368);
             this.pleaseWaitSpinner.Name = "pleaseWaitSpinner";
             this.pleaseWaitSpinner.Size = new System.Drawing.Size(32, 32);
             this.pleaseWaitSpinner.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
@@ -295,7 +295,7 @@
             // viewReport
             // 
             this.viewReport.AutoSize = true;
-            this.viewReport.Location = new System.Drawing.Point(106, 382);
+            this.viewReport.Location = new System.Drawing.Point(106, 390);
             this.viewReport.Name = "viewReport";
             this.viewReport.Size = new System.Drawing.Size(65, 13);
             this.viewReport.TabIndex = 26;
@@ -310,14 +310,14 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
             this.CancelButton = this.CloseBtn;
-            this.ClientSize = new System.Drawing.Size(455, 466);
+            this.ClientSize = new System.Drawing.Size(455, 471);
             this.Controls.Add(this.viewReport);
             this.Controls.Add(this.pleaseWaitSpinner);
             this.Controls.Add(this.includeAttachments);
             this.Controls.Add(this.areaPaths);
             this.Controls.Add(this.label10);
             this.Controls.Add(this.label9);
-            this.Controls.Add(this.jiraMappingsBtn);
+            this.Controls.Add(this.advancedSettingsBtn);
             this.Controls.Add(this.detailedProgress);
             this.Controls.Add(this.tfsTeams);
             this.Controls.Add(this.label8);
@@ -372,7 +372,7 @@
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.ComboBox tfsTeams;
         private System.Windows.Forms.Label detailedProgress;
-        private System.Windows.Forms.LinkLabel jiraMappingsBtn;
+        private System.Windows.Forms.LinkLabel advancedSettingsBtn;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.ComboBox areaPaths;
         private System.Windows.Forms.Label label10;

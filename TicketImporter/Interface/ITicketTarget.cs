@@ -1,4 +1,5 @@
-﻿using TrackProgress;
+﻿using System.Collections.Generic;
+using TrackProgress;
 
 namespace TicketImporter.Interface
 {
@@ -12,6 +13,7 @@ namespace TicketImporter.Interface
         bool StartImport(string externalReferenceTag);
         bool CheckTicket(Ticket toAdd, out IFailedTicket failure);
         bool AddTicket(Ticket toAdd);
+        IAvailableTicketTypes GetAvailableTicketTypes();
         void EndImport();
     }
 }

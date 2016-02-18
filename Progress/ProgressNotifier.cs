@@ -11,7 +11,7 @@
 
         public void UpdateProgress()
         {
-            if (clientAvailable() == true)
+            if (clientAvailable())
             {
                 if (recordCount > 0 && percentComplete < 100)
                 {

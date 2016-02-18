@@ -14,7 +14,7 @@ using TrackProgress;
 
 namespace TicketImporter
 {
-    public class TfsProject : ITicketTarget
+    public class TfsProject : ITicketTarget, IAvailableTicketTypes
     {
         public TfsProject(string serverUri, string project)
         {
@@ -25,7 +25,7 @@ namespace TicketImporter
             failedAttachments = false;
             importSummary = new ImportSummary();
 
-            if (String.IsNullOrWhiteSpace(serverUri) == false)
+            if (string.IsNullOrWhiteSpace(serverUri) == false)
             {
                 tfs = TfsTeamProjectCollectionFactory.GetTeamProjectCollection(new Uri(serverUri));
             }
@@ -34,15 +34,14 @@ namespace TicketImporter
             {
                 var workItemStore = tfs.GetService<WorkItemStore>();
                 fieldDefinitions = workItemStore.Projects[this.project].Store.FieldDefinitions;
-                if (fieldDefinitions.Contains("Description") == true)
+                if (fieldDefinitions.Contains("Description"))
                 {
                     supportsHtml = (fieldDefinitions["Description"].FieldType == FieldType.Html);
                 }
                 tfsUsers = new TfsUsers(this);
                 tfsUsers.OnFailedToImpersonate += OnWarn;
 
-                areaPaths = new List<string>();
-                areaPaths.Add(this.project);
+                areaPaths = new List<string> { this.project };
                 foreach (Node area in workItemStore.Projects[this.project].AreaRootNodes)
                 {
                     areaPaths.Add(area.Path);
@@ -62,7 +61,7 @@ namespace TicketImporter
             {
                 var teamNames = new List<string>();
                 if (fieldDefinitions != null &&
-                    fieldDefinitions.Contains("Team") == true)
+                    fieldDefinitions.Contains("Team"))
                 {
                     teamNames.AddRange(fieldDefinitions["Team"].AllowedValues.Cast<string>());
                 }
@@ -120,13 +119,10 @@ namespace TicketImporter
 
                 if (fieldDefinitions != null)
                 {
-                    foreach (FieldDefinition field in fieldDefinitions)
+                    foreach (var field in fieldDefinitions.Cast<FieldDefinition>().Where(
+                        field => prohibitedFields.Contains((CoreField) field.Id) == false && field.IsComputed == false && field.IsEditable))
                     {
-                        if (prohibitedFields.Contains((CoreField) field.Id) == false
-                            && field.IsComputed == false && field.IsEditable == true)
-                        {
-                            yield return field.Name;
-                        }
+                        yield return field.Name;
                     }
                 }
             }
@@ -136,6 +132,8 @@ namespace TicketImporter
         {
             get { return tfsUsers; }
         }
+
+        public string UsingTemplate { get { return processTemplateName; } }
 
         private void OnWarn(string failure)
         {
@@ -157,15 +155,13 @@ namespace TicketImporter
             var allowedValues = new List<string>();
             if (fieldDefinitions != null)
             {
-                foreach (FieldDefinition field in fieldDefinitions)
+                foreach (var field in fieldDefinitions.Cast<FieldDefinition>().
+                    Where(field => field.AllowedValues != null &&
+                         (string.Compare(fieldName, field.Name, StringComparison.OrdinalIgnoreCase) == 0 ||
+                          string.Compare(fieldName, field.ReferenceName, StringComparison.OrdinalIgnoreCase) == 0)))
                 {
-                    if (field.AllowedValues != null &&
-                        (String.Compare(fieldName, field.Name, true) == 0 ||
-                         String.Compare(fieldName, field.ReferenceName, true) == 0))
-                    {
-                        allowedValues.AddRange(field.AllowedValues.Cast<string>());
-                        break;
-                    }
+                    allowedValues.AddRange(field.AllowedValues.Cast<string>());
+                    break;
                 }
             }
             return allowedValues;
@@ -222,10 +218,9 @@ namespace TicketImporter
             var ics = tfs.GetService<ICommonStructureService>();
 
             var p = vcs.GetTeamProject(project);
-            string projectName = string.Empty,
-                projectState = String.Empty;
-            var templateId = 0;
-            ProjectProperty[] projectProperties = null;
+            string projectName, projectState;
+            int templateId;
+            ProjectProperty[] projectProperties;
 
             ics.GetProjectProperties(p.ArtifactUri.AbsoluteUri, out projectName, out projectState, out templateId,
                 out projectProperties);
@@ -235,7 +230,7 @@ namespace TicketImporter
 
         private void assignToField(WorkItem workItem, string fieldName, object value)
         {
-            if (workItem.Fields.Contains(fieldName) == true)
+            if (workItem.Fields.Contains(fieldName))
             {
                 workItem.Fields[fieldName].Value = value;
             }
@@ -246,7 +241,7 @@ namespace TicketImporter
             WorkItemType workItemType;
 
             var tfs_impersonated = tfsUsers.ImpersonateDefaultCreator();
-            if (tfsUsers.CanAddTicket(toImport.CreatedBy) == true)
+            if (tfsUsers.CanAddTicket(toImport.CreatedBy))
             {
                 tfs_impersonated = tfsUsers.Impersonate(toImport.CreatedBy);
             }
@@ -254,41 +249,14 @@ namespace TicketImporter
             var workItemStore = (WorkItemStore) tfs_impersonated.GetService(typeof (WorkItemStore));
             var workItemTypes = workItemStore.Projects[project].WorkItemTypes;
 
-            switch (toImport.TicketType)
-            {
-                case Ticket.Type.Bug:
-                    workItemType = workItemTypes["Bug"];
-                    break;
-                case Ticket.Type.Decision:
-                    workItemType = workItemTypes["Decision"];
-                    break;
-                case Ticket.Type.Epic:
-                    workItemType = workItemTypes["Epic"];
-                    break;
-                case Ticket.Type.Impediment:
-                    workItemType = workItemTypes["Impediment"];
-                    break;
-                case Ticket.Type.Risk:
-                    workItemType = workItemTypes["Risk"];
-                    break;
-                case Ticket.Type.Story:
-                    workItemType = workItemTypes["Product Backlog Item"];
-                    break;
-                case Ticket.Type.TestCase:
-                    workItemType = workItemTypes["Test Case"];
-                    break;
-                default:
-                    workItemType = workItemTypes["Task"];
-                    break;
-            }
-
+            workItemType = workItemTypes[toImport.TicketType];
             var workItem = new WorkItem(workItemType);
 
             if (tfsFieldMap != null)
             {
                 foreach (var field in tfsFieldMap.Fields)
                 {
-                    if (String.IsNullOrWhiteSpace(field.Value) == false)
+                    if (string.IsNullOrWhiteSpace(field.Value) == false)
                     {
                         assignToField(workItem, field.Key, field.Value);
                     }
@@ -306,12 +274,12 @@ namespace TicketImporter
             workItem.AreaPath = (string.IsNullOrWhiteSpace(assignedAreaPath) ? project : assignedAreaPath);
             assignToField(workItem, "External Reference", toImport.ID);
 
-            if (toImport.HasUrl == true)
+            if (toImport.HasUrl)
             {
                 try
                 {
                     var hl = new Hyperlink(toImport.Url);
-                    hl.Comment = String.Format("{0} [{1}]", externalReferenceTag, toImport.ID);
+                    hl.Comment = string.Format("{0} [{1}]", externalReferenceTag, toImport.ID);
                     workItem.Links.Add(hl);
                 }
                 catch
@@ -327,7 +295,7 @@ namespace TicketImporter
                     comment.Body.Replace(Environment.NewLine, "<br>"),
                     comment.Author.DisplayName,
                     comment.CreatedOn.ToShortDateString());
-                if (comment.UpdatedLater == true)
+                if (comment.UpdatedLater)
                 {
                     body = String.Format("{0}<br>(Last updated on the {1}).<br>", body,
                         comment.Updated.ToShortDateString());
@@ -352,7 +320,7 @@ namespace TicketImporter
             };
             if (toImport.TicketState == Ticket.State.Done)
             {
-                rows.Add(new Tuple<string, string>("Closed on ", toImport.ClosedOn.ToString()));
+                rows.Add(new Tuple<string, string>("Closed on ", toImport.ClosedOn.ToString(CultureInfo.InvariantCulture)));
             }
             if (string.IsNullOrWhiteSpace(toImport.Project) == false)
             {
@@ -400,7 +368,7 @@ namespace TicketImporter
             var workItemStore = (WorkItemStore) tfs.GetService(typeof (WorkItemStore));
             var ableToAdd = workItemStore.Projects[project].HasWorkItemWriteRights;
 
-            if (ableToAdd == true)
+            if (ableToAdd)
             {
                 this.externalReferenceTag = externalReferenceTag;
                 tfsFieldMap = new TfsFieldMap(this);
@@ -426,7 +394,7 @@ namespace TicketImporter
             if (previouslyImported.ContainsKey(toAdd.ID) == false)
             {
                 var validationErrors = toWorkItem(toAdd).Validate();
-                okToAdd = (validationErrors.Count == 0 ? true : false);
+                okToAdd = (validationErrors.Count == 0);
                 if (okToAdd == false)
                 {
                     failure = new TfsFailedValidation(toAdd, validationErrors);
@@ -448,7 +416,7 @@ namespace TicketImporter
 
                 foreach (var attachment in toAdd.Attachments)
                 {
-                    if (attachment.Downloaded == true)
+                    if (attachment.Downloaded)
                     {
                         var toAttach =
                             new Microsoft.TeamFoundation.WorkItemTracking.Client.Attachment(attachment.Source);
@@ -472,7 +440,7 @@ namespace TicketImporter
                         workItem.Attachments.Clear();
                         foreach (var attachment in toAdd.Attachments)
                         {
-                            if (string.Compare(rejectedFile, attachment.FileName) != 0 && attachment.Downloaded == true)
+                            if (string.CompareOrdinal(rejectedFile, attachment.FileName) != 0 && attachment.Downloaded)
                             {
                                 var toAttach =
                                     new Microsoft.TeamFoundation.WorkItemTracking.Client.Attachment(attachment.Source);
@@ -489,7 +457,7 @@ namespace TicketImporter
                     }
                 } while (addedOk == false && attempts > 0);
 
-                if (addedOk == true)
+                if (addedOk)
                 {
                     newlyImported[toAdd] = workItem;
                     if (rejectedAttachments.Count > 0)
@@ -549,15 +517,8 @@ namespace TicketImporter
 
         private WorkItem findWorkItem(string sourceId)
         {
-            WorkItem workItem = null;
-            foreach (var ticket in newlyImported)
-            {
-                if (String.Compare(ticket.Key.ID, sourceId) == 0)
-                {
-                    workItem = ticket.Value;
-                    break;
-                }
-            }
+            var workItem = (from ticket in newlyImported
+                            where string.CompareOrdinal(ticket.Key.ID, sourceId) == 0 select ticket.Value).FirstOrDefault();
             if (workItem == null)
             {
                 previouslyImported.TryGetValue(sourceId, out workItem);
@@ -580,7 +541,7 @@ namespace TicketImporter
                     var hyperLinks = workItem.Links.OfType<Hyperlink>();
                     foreach (var link in hyperLinks)
                     {
-                        if (link.Comment.IndexOf(externalRef) == 0)
+                        if (link.Comment.IndexOf(externalRef, StringComparison.Ordinal) == 0)
                         {
                             var toExtract = (link.Comment.Length - externalRef.Length) - 1;
                             var sourceId = link.Comment.Substring(externalRef.Length, toExtract);
@@ -661,7 +622,7 @@ namespace TicketImporter
             var ticketTitle = workItem.Id + " - " + workItem.Title;
             onDetailedProcessing(ticketTitle);
 
-            if (source.HasParent == true)
+            if (source.HasParent)
             {
                 var parentWorkItem = findWorkItem(source.Parent);
                 if (parentWorkItem != null)
@@ -680,10 +641,10 @@ namespace TicketImporter
                 }
             }
 
-            if (source.HasLinks == true)
+            if (source.HasLinks)
             {
                 var workItemStore = (WorkItemStore) tfs.GetService(typeof (WorkItemStore));
-                if (workItemStore.WorkItemLinkTypes.Contains("System.LinkTypes.Related") == true)
+                if (workItemStore.WorkItemLinkTypes.Contains("System.LinkTypes.Related"))
                 {
                     var linkType = workItemStore.WorkItemLinkTypes["System.LinkTypes.Related"];
                     var linkTypeEnd = workItemStore.WorkItemLinkTypes.LinkTypeEnds[linkType.ForwardEnd.Name];
@@ -738,7 +699,7 @@ namespace TicketImporter
                 }
             }
 
-            if (workItem.IsDirty == true)
+            if (workItem.IsDirty)
             {
                 try
                 {
@@ -833,7 +794,7 @@ namespace TicketImporter
             importSummary.End = DateTime.Now;
             importSummary.Imported = newlyImported.Count;
             importSummary.PreviouslyImported = previouslyImported.Count;
-            if (failedAttachments == true)
+            if (failedAttachments)
             {
                 importSummary.Notes.Add(
                     "Default max. attachment size in TFS is 4MB. Contact your TFS Administrator to expand this limit if required.");
@@ -854,6 +815,69 @@ namespace TicketImporter
             get { return importSummary; }
         }
 
+        public IAvailableTicketTypes GetAvailableTicketTypes()
+        {
+            return this;
+        }
+        #endregion
+
+        #region ITicketType Interface
+        public IEnumerable<string> Types
+        {
+            get { return (from WorkItemType type in this.WorkItemTypes select type.Name).ToList(); }
+        }
+
+        private string firstFound(params string[] possibleValues)
+        {
+            foreach (var p in possibleValues.Where(p => Types.Any(t => string.Equals(t, p, StringComparison.CurrentCultureIgnoreCase))))
+            {
+                return p;
+            }
+            return "Task";
+        }
+        public bool Contains(string type)
+        {
+            return Types.Any(t => string.Equals(t, type, StringComparison.CurrentCultureIgnoreCase));
+        }
+
+        public string Bug
+        {
+            get { return firstFound("Bug", "Issue"); }
+        }
+
+        public string Decision
+        {
+            get { return firstFound("Decision"); }
+        }
+
+        public string Risk
+        {
+            get { return firstFound("Risk", "Issue"); }
+        }
+
+        public string Story
+        {
+            get { return firstFound("User Story", "Product Backlog Item"); }
+        }
+
+        public string Epic
+        {
+            get { return firstFound("Epic", "Feature", "Product Backlog Item"); }
+        }
+
+        public string TestCase
+        {
+            get { return firstFound("Test Case"); }
+        }
+
+        public string Impediment
+        {
+            get { return firstFound("Impediment", "Issue"); }
+        }
+        public string Task
+        {
+            get { return firstFound("Task"); }
+        }
         #endregion
     }
 }

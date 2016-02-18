@@ -9,7 +9,7 @@ namespace TicketImporter
         public List<string> Errors;
         public int Imported;
         public List<string> Notes;
-        public Dictionary<Ticket.Type, long> OpenTickets;
+        public Dictionary<string, long> OpenTickets;
         public int PreviouslyImported;
         public DateTime Start;
         public List<string> TargetDetails;
@@ -17,7 +17,7 @@ namespace TicketImporter
 
         public ImportSummary()
         {
-            OpenTickets = new Dictionary<Ticket.Type, long>();
+            OpenTickets = new Dictionary<string, long>();
             Errors = new List<string>();
             Warnings = new List<string>();
             Notes = new List<string>();

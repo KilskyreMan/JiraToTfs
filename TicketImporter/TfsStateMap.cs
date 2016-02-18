@@ -69,7 +69,7 @@ namespace TicketImporter
         private void findDonePath()
         {
             PathToDone = new List<string>();
-            if (pathToDoneFrom(initialState) == true)
+            if (pathToDoneFrom(initialState))
             {
                 PathToDone.RemoveAt(0);
             }
@@ -107,7 +107,7 @@ namespace TicketImporter
                 {
                     var from = path.Attributes.GetNamedItem("to").Value;
                     foundPath = pathToDoneFrom(from);
-                    if (foundPath == true)
+                    if (foundPath)
                     {
                         break;
                     }
@@ -131,7 +131,7 @@ namespace TicketImporter
             {
                 foreach (var wis in workItemStates)
                 {
-                    if (storedStates.ContainsKey(wis.Name) == true)
+                    if (storedStates.ContainsKey(wis.Name))
                     {
                         wis.SelectedApprovedState = storedStates[wis.Name];
                     }
@@ -222,7 +222,7 @@ namespace TicketImporter
         private void findAndExcute(string workItemName, Action actionToPerform)
         {
             foreach (var wis in workItemStates.Where(
-                wis => wis.TypeMatches(workItemName) == true))
+                wis => wis.TypeMatches(workItemName)))
             {
                 actionToPerform(wis);
                 break;

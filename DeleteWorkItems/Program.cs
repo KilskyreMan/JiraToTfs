@@ -67,7 +67,7 @@ namespace DeleteWorkItems
                 if (tfs != null)
                 {
                     Console.WriteLine("");
-                    if (string.IsNullOrWhiteSpace(csvFile) == true)
+                    if (string.IsNullOrWhiteSpace(csvFile))
                     {
                         Console.WriteLine("Are you sure you wish to remove all work-items found under");
                     }
@@ -90,13 +90,13 @@ namespace DeleteWorkItems
                         int[] toDelete = null;
                         var workItemStore = (WorkItemStore) tfs.GetService(typeof (WorkItemStore));
 
-                        if (string.IsNullOrWhiteSpace(csvFile) == true)
+                        if (string.IsNullOrWhiteSpace(csvFile))
                         {
                             Console.WriteLine("    * Querying TFS project '{0}' for work-items to delete.", teamProject);
                             var queryResults = workItemStore.Query("Select [ID] From WorkItems");
                             toDelete = (from WorkItem workItem in queryResults select workItem.Id).ToArray();
                         }
-                        else if (File.Exists(csvFile) == true)
+                        else if (File.Exists(csvFile))
                         {
                             Console.WriteLine("    * Deleting work-items described in '{0}'.", csvFile);
                             var ids = File.ReadAllText(csvFile);

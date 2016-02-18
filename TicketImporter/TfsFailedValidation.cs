@@ -27,7 +27,7 @@ namespace TicketImporter
                         field.Status);
 
                 var info = new List<string>();
-                if (field.HasAllowedValuesList == true)
+                if (field.HasAllowedValuesList)
                 {
                     info.Add("Allowable values: " + toCommaSeparatedString(field.AllowedValues));
                 }

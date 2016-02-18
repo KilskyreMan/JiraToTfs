@@ -9,7 +9,7 @@ namespace TicketImporter.Interface
         DetailedProcessing OnDetailedProcessing { get; set; }
         PercentComplete OnPercentComplete { set; get; }
         bool PreferHtml { get; set; }
-        IEnumerable<Ticket> Tickets();
+        IEnumerable<Ticket> Tickets(IAvailableTicketTypes ticketTarget);
         List<string> GetAvailableTicketTypes();
         void DownloadAttachments(Ticket ticket, string toPath);
     }

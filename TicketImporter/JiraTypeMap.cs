@@ -1,30 +1,84 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Principal;
+using TicketImporter.Interface;
 
 namespace TicketImporter
 {
     public class JiraTypeMap
     {
-        public JiraTypeMap(JiraProject jiraProject)
-        {
-            jiraTicketTypes = new List<string>();
-            map = new Dictionary<string, Ticket.Type>();
+        #region private class members
 
-            if (jiraProject != null)
+        private Dictionary<string, string> map;
+        private readonly List<string> jiraTicketTypes;
+        private readonly IAvailableTicketTypes availableTypes;
+        private const string key = "TicketTypes";
+
+        private string defaultsTo(string jiraType)
+        {
+            var mapped = availableTypes.Task;
+            var toMatch = jiraType.ToUpper();
+
+            if (toMatch.Contains("RISK"))
             {
-                var storedMap = SettingsStore.Load(key);
-                jiraTicketTypes = jiraProject.GetAvailableTicketTypes();
-                foreach (var jiraType in jiraTicketTypes)
+                mapped = availableTypes.Risk;
+            }
+            else if (toMatch.Contains("BUG") || toMatch.Contains("DEFECT") || toMatch.Contains("SUPPORT"))
+            {
+                mapped = availableTypes.Bug;
+            }
+            else if (toMatch.Contains("IMPEDIMENT") || toMatch.Contains("INCIDENT") || toMatch.Contains("PROBLEM"))
+            {
+                mapped = availableTypes.Impediment;
+            }
+            else if (toMatch.Contains("STORY"))
+            {
+                mapped = availableTypes.Story;
+            }
+            else if (toMatch.Contains("FEATURE") || toMatch.Contains("IMPROVEMENT"))
+            {
+                mapped = availableTypes.Epic;
+            }
+            else if (toMatch.Contains("DECISION"))
+            {
+                mapped = availableTypes.Decision;
+            }
+            else if (toMatch.Contains("EPIC"))
+            {
+                mapped = availableTypes.Epic;
+            }
+            else if (toMatch.Contains("TEST CASE") || toMatch.Contains("TESTCASE"))
+            {
+                mapped = availableTypes.TestCase;
+            }
+            return mapped;
+        }
+        #endregion
+
+        public JiraTypeMap(ITicketSource jiraProject, IAvailableTicketTypes availableTicektTypes)
+        {
+            map = new Dictionary<string, string>();
+            jiraTicketTypes = jiraProject.GetAvailableTicketTypes();
+            availableTypes = availableTicektTypes;
+
+            if (jiraTicketTypes.Count > 0)
+            {
+                map = SettingsStore.Load(key);
+                var updateStore = false;
+                foreach (
+                    var jiraType in
+                        jiraTicketTypes.Where(
+                            jiraType =>
+                                map.ContainsKey(jiraType) == false || availableTypes.Contains(map[jiraType]) == false))
                 {
-                    if (storedMap.ContainsKey(jiraType) == false)
-                    {
-                        map.Add(jiraType, defaultsTo(jiraType));
-                    }
-                    else
-                    {
-                        map.Add(jiraType, (Ticket.Type) Enum.Parse(typeof (Ticket.Type), storedMap[jiraType], true));
-                    }
+                    map[jiraType] = defaultsTo(jiraType);
+                    updateStore = true;
+                }
+
+                if (updateStore)
+                {
+                    SettingsStore.Save(key, map);
                 }
             }
         }
@@ -34,24 +88,19 @@ namespace TicketImporter
             get { return map.Count; }
         }
 
-        public Ticket.Type this[string lookUp]
+        public string this[string lookUp]
         {
             get { return map[lookUp]; }
         }
 
         public IEnumerable<KeyValuePair<string, string>> Mappings
         {
-            get { return map.Select(kp => new KeyValuePair<string, string>(kp.Key, kp.Value.ToString())); }
+            get { return map.Select(kp => new KeyValuePair<string, string>(kp.Key, kp.Value)); }
         }
 
         public IEnumerable<string> AvailableTicketTypes
         {
-            get
-            {
-                return from object ticketType in Enum.GetValues(typeof (Ticket.Type))
-                    where (Ticket.Type) ticketType != Ticket.Type.Unknown
-                    select ticketType.ToString();
-            }
+            get { return availableTypes.Types; }
         }
 
         public void Save(IEnumerable<KeyValuePair<string, string>> source)
@@ -60,67 +109,19 @@ namespace TicketImporter
             var keyValuePairs = source as KeyValuePair<string, string>[] ?? source.ToArray();
             foreach (var kp in keyValuePairs)
             {
-                map.Add(kp.Key, (Ticket.Type) Enum.Parse(typeof (Ticket.Type), kp.Value, true));
+                map.Add(kp.Key, kp.Value);
             }
             SettingsStore.Save(key, keyValuePairs);
         }
 
         public void RestoreDefaults()
         {
-            map = new Dictionary<string, Ticket.Type>();
+            map = new Dictionary<string, string>();
             foreach (var jiraType in jiraTicketTypes)
             {
                 map.Add(jiraType, defaultsTo(jiraType));
             }
-
-            var toSave = map.ToDictionary(kp => kp.Key, kp => kp.Value.ToString());
-            SettingsStore.Save(key, toSave);
+            SettingsStore.Save(key, map);
         }
-
-        #region private class members
-
-        private Dictionary<string, Ticket.Type> map;
-        private readonly List<string> jiraTicketTypes;
-        private const string key = "TicketTypes";
-
-        private Ticket.Type defaultsTo(string jiraType)
-        {
-            var mapped = Ticket.Type.Task;
-
-            var toMatch = jiraType.ToUpper();
-            if (toMatch.Contains("RISK"))
-            {
-                mapped = Ticket.Type.Risk;
-            }
-            else if (toMatch.Contains("BUG") || toMatch.Contains("DEFECT") ||
-                     toMatch.Contains("INCIDENT") || toMatch.Contains("PROBLEM"))
-            {
-                mapped = Ticket.Type.Bug;
-            }
-            else if (toMatch.Contains("IMPEDIMENT"))
-            {
-                mapped = Ticket.Type.Impediment;
-            }
-            else if (toMatch.Contains("STORY") ||
-                     toMatch.Contains("NEW FEATURE") || toMatch.Contains("IMPROVEMENT"))
-            {
-                mapped = Ticket.Type.Story;
-            }
-            else if (toMatch.Contains("DECISION"))
-            {
-                mapped = Ticket.Type.Decision;
-            }
-            else if (toMatch.Contains("EPIC"))
-            {
-                mapped = Ticket.Type.Epic;
-            }
-            else if (toMatch.Contains("TEST CASE") || toMatch.Contains("TESTCASE"))
-            {
-                mapped = Ticket.Type.TestCase;
-            }
-            return mapped;
-        }
-
-        #endregion
     }
 }

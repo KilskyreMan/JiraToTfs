@@ -14,7 +14,7 @@
         {
             var jira = jiraProject;
             this.tfsProject = tfsProject;
-            jiraTypeMap = new JiraTypeMap(jira);
+            jiraTypeMap = new JiraTypeMap(jira, this.tfsProject);
             tfsFieldMap = new TfsFieldMap(this.tfsProject);
             tfsStateMap = new TfsStateMap(this.tfsProject);
             tfsPriorityMap = new TfsPriorityMap();

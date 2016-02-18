@@ -22,7 +22,7 @@ namespace TicketImporter
             this.ticketSource.OnPercentComplete += onPercentComplete;
             this.includeAttachments = includeAttachments;
             downloadFolder = "";
-            if (this.includeAttachments == true)
+            if (this.includeAttachments)
             {
                 var directoryName = string.Format("{0}_to_{1}", this.ticketSource.Source, this.ticketTarget.Target);
                 downloadFolder = Path.Combine(Path.GetTempPath(), directoryName);
@@ -85,17 +85,16 @@ namespace TicketImporter
             FailedTickets = new List<IFailedTicket>();
             passedTickets = new List<Ticket>();
             var okToImport = ticketTarget.StartImport(ticketSource.Source);
-            if (okToImport == true)
+            if (okToImport)
             {
                 ticketSource.PreferHtml = ticketTarget.SupportsHtml;
 
-                setCurrentAction(String.Format("Validating {0} tickets against {1}", ticketSource.Source,
-                    ticketTarget.Target));
+                setCurrentAction(String.Format("Validating {0} tickets against {1}", ticketSource.Source, ticketTarget.Target));
 
-                foreach (var sourceTicket in ticketSource.Tickets())
+                foreach (var sourceTicket in ticketSource.Tickets(ticketTarget.GetAvailableTicketTypes()))
                 {
                     IFailedTicket failedTicket;
-                    if (ticketTarget.CheckTicket(sourceTicket, out failedTicket) == true)
+                    if (ticketTarget.CheckTicket(sourceTicket, out failedTicket))
                     {
                         passedTickets.Add(sourceTicket);
                     }
@@ -111,7 +110,7 @@ namespace TicketImporter
                     var progressNotifer = new ProgressNotifier(onPercentComplete, passedTickets.Count);
                     foreach (var passedTicket in passedTickets)
                     {
-                        if (includeAttachments == true)
+                        if (includeAttachments)
                         {
                             clearDownloadFolder();
                             ticketSource.DownloadAttachments(passedTicket, downloadFolder);
@@ -127,7 +126,7 @@ namespace TicketImporter
                     setCurrentAction(String.Format("Updating {0} tickets", ticketTarget.Target));
                     ticketTarget.EndImport();
 
-                    if (includeAttachments == true)
+                    if (includeAttachments)
                     {
                         clearDownloadFolder();
                         Directory.Delete(downloadFolder);

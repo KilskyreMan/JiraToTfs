@@ -14,8 +14,7 @@ namespace JiraToTfs.Presenter
         public JiraToTfsPresenter(IJiraToTfsView view)
         {
             this.view = view;
-            importWorker = new BackgroundWorker();
-            importWorker.WorkerReportsProgress = true;
+            importWorker = new BackgroundWorker { WorkerReportsProgress = true };
             importWorker.DoWork += import_DoWork;
             importWorker.RunWorkerCompleted += import_Done;
             importWorker.ProgressChanged += onProgressChanged;
@@ -49,7 +48,7 @@ namespace JiraToTfs.Presenter
 
         public void StartImport()
         {
-            if (validateSettings() == true)
+            if (validateSettings())
             {
                 view.ImportStarted();
                 importWorker.RunWorkerAsync();
@@ -246,7 +245,7 @@ namespace JiraToTfs.Presenter
                     if (percentComplete > 0)
                     {
                         importWorker.ReportProgress((int) UpdateProgress.overAll,
-                            String.Format("{0} ({1}% complete).", action, percentComplete));
+                            string.Format("{0} ({1}% complete).", action, percentComplete));
                     }
                     else
                     {
@@ -278,15 +277,15 @@ namespace JiraToTfs.Presenter
                     var summary = importAgent.ImportSummary;
                     bool errorsFound = (summary.Errors.Count > 0),
                         warningsFound = (summary.Warnings.Count > 0);
-                    if (errorsFound == true || warningsFound == true)
+                    if (errorsFound || warningsFound)
                     {
-                        if (errorsFound == true)
+                        if (errorsFound)
                         {
                             view.WarnUser("Import complete but with errors.");
                         }
-                        if (warningsFound == true)
+                        if (warningsFound)
                         {
-                            if (errorsFound == true)
+                            if (errorsFound)
                             {
                                 view.WarnUser("Import complete but with errors and warnings.");
                             }

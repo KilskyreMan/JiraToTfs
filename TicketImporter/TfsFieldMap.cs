@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace TicketImporter
 {
@@ -39,11 +40,12 @@ namespace TicketImporter
         public void Save(IEnumerable<KeyValuePair<string, string>> source)
         {
             map.Clear();
-            foreach (var kp in source)
+            var keyValuePairs = source as KeyValuePair<string, string>[] ?? source.ToArray();
+            foreach (var kp in keyValuePairs)
             {
                 map.Add(kp.Key, kp.Value);
             }
-            SettingsStore.Save(key, source);
+            SettingsStore.Save(key, keyValuePairs);
         }
 
         #region private class members

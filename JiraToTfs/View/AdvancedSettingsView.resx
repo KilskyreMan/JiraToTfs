@@ -1,5 +1,4 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -60,8 +59,7 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-              xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -119,48 +117,40 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <metadata name="jiraColumn.UserAddedColumn"
-            type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+  <metadata name="jiraColumn.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
-  <metadata name="maptoColumn.UserAddedColumn"
-            type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+  <metadata name="maptoColumn.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
-  <metadata name="tfsFieldValueColumn.UserAddedColumn"
-            type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+  <metadata name="tfsFieldValueColumn.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
-  <metadata name="initialState.UserAddedColumn"
-            type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+  <metadata name="initialState.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
-  <metadata name="toPriorityListColumn.UserAddedColumn"
-            type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+  <metadata name="toPriorityListColumn.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
-  <metadata name="toPriorityColumn.UserAddedColumn"
-            type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+  <metadata name="toPriorityColumn.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
-  <assembly alias="System.Drawing"
-            name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing"
-        mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-      AAABAAEAICAQAAAABADoAgAAFgAAACgAAAAgAAAAQAAAAAEABAAAAAAAAAIAAAAAAAAAAAAAEAAAABAA
-      AAAAAAAAAACAAACAAAAAgIAAgAAAAIAAgACAgAAAgICAAMDAwAAAAP8AAP8AAAD//wD/AAAA/wD/AP//
-      AAD///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHd3AAAAAAAAAAAA
-      AAAAAHAAAAcAAAAAAAAAAAAAAAcAAAAAcAAAAAAAAAAAAABwAAAAAAcAAAAAAAAAAAAIAAAAAAAAgAAA
-      AAAAAAAABwAAAAAAAHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAACAAAAAAAAAAAcAAAAAAA
-      AAcAAAAAAAAAAHAAAAAAAAAHAAAAAAAAAAdwAAAAAAAAB3AAAAAACAAAAABwcAd3AAAAAIAAAAgAAAAH
-      AAdwAHAAAACAAAAAcAAABwgIgIBwAAAHAAAAAAAAAAcAd3cAcAAAAAAAAAAHAAAHAABwAHAAAAAAAAAA
-      AAcAAHcAB3AAAHAAAAAAAAAAcAAAAAAAAAcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAcAAAAAAHAAAA
-      AAAAAAAAAAcAAAAAcAAAAAAAAAAAAAAAh3AHeAAAAAAAAAAAAAAAAAAIgAAAAAAAAAAAAAAAAAAAAAAA
-      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/////////////////////////////
-      /////D////AP///gB///wAP//4AB//+AAf//gAH//wAA//8AAP//AAD/8AAAD+AEAAfgDnAH8AgQD/gM
-      MB/4DnA//gAAf/8AAP//gAH//8AD///gB///8A////5//////////////////w==
-    </value>
+        AAABAAEAICAQAAAABADoAgAAFgAAACgAAAAgAAAAQAAAAAEABAAAAAAAAAIAAAAAAAAAAAAAEAAAABAA
+        AAAAAAAAAACAAACAAAAAgIAAgAAAAIAAgACAgAAAgICAAMDAwAAAAP8AAP8AAAD//wD/AAAA/wD/AP//
+        AAD///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHd3AAAAAAAAAAAA
+        AAAAAHAAAAcAAAAAAAAAAAAAAAcAAAAAcAAAAAAAAAAAAABwAAAAAAcAAAAAAAAAAAAIAAAAAAAAgAAA
+        AAAAAAAABwAAAAAAAHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAACAAAAAAAAAAAcAAAAAAA
+        AAcAAAAAAAAAAHAAAAAAAAAHAAAAAAAAAAdwAAAAAAAAB3AAAAAACAAAAABwcAd3AAAAAIAAAAgAAAAH
+        AAdwAHAAAACAAAAAcAAABwgIgIBwAAAHAAAAAAAAAAcAd3cAcAAAAAAAAAAHAAAHAABwAHAAAAAAAAAA
+        AAcAAHcAB3AAAHAAAAAAAAAAcAAAAAAAAAcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAcAAAAAAHAAAA
+        AAAAAAAAAAcAAAAAcAAAAAAAAAAAAAAAh3AHeAAAAAAAAAAAAAAAAAAIgAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/////////////////////////////
+        /////D////AP///gB///wAP//4AB//+AAf//gAH//wAA//8AAP//AAD/8AAAD+AEAAfgDnAH8AgQD/gM
+        MB/4DnA//gAAf/8AAP//gAH//8AD///gB///8A////5//////////////////w==
+</value>
   </data>
 </root>

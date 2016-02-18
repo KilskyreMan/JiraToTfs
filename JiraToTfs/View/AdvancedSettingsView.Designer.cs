@@ -139,7 +139,7 @@
             this.typeTab.Padding = new System.Windows.Forms.Padding(3);
             this.typeTab.Size = new System.Drawing.Size(521, 567);
             this.typeTab.TabIndex = 0;
-            this.typeTab.Text = "Ticket Type";
+            this.typeTab.Text = "Work Item Type";
             // 
             // pleaseCheckJira
             // 
@@ -149,8 +149,8 @@
             this.pleaseCheckJira.Name = "pleaseCheckJira";
             this.pleaseCheckJira.Size = new System.Drawing.Size(283, 40);
             this.pleaseCheckJira.TabIndex = 21;
-            this.pleaseCheckJira.Text = "Close this dialog and ensure you have specified the right Jira Server, user name " +
-    "and password.";
+            this.pleaseCheckJira.Text = "Close this dialog and ensure you have specified connection and login details for " +
+    "both Jira and TFS.";
             this.pleaseCheckJira.Visible = false;
             // 
             // noJiraTicketTypes
@@ -161,7 +161,7 @@
             this.noJiraTicketTypes.Name = "noJiraTicketTypes";
             this.noJiraTicketTypes.Size = new System.Drawing.Size(283, 19);
             this.noJiraTicketTypes.TabIndex = 20;
-            this.noJiraTicketTypes.Text = "Unable to determine available Jira types.";
+            this.noJiraTicketTypes.Text = "Unable to map Work Item Types.";
             this.noJiraTicketTypes.Visible = false;
             // 
             // restoreDefaultTypesBtn
