@@ -79,6 +79,9 @@
     <Compile Include="TechTalk.JiraRestClient\Timetracking.cs" />
     <Compile Include="TechTalk.JiraRestClient\Transition.cs" />
     <Compile Include="TechTalk.JiraRestClient\TransitionsContainer.cs" />
+    <Compile Include="TfsField.cs" />
+    <Compile Include="TfsFieldCollection.cs" />
+    <Compile Include="TfsFieldFactory.cs" />
     <Compile Include="TfsIssue.cs" />
     <Compile Include="Interface\IAttachment.cs" />
     <Compile Include="Interface\IFailedTicket.cs" />

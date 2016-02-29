@@ -198,6 +198,7 @@ namespace JiraToTfs.Presenter
                 view.AreaPaths = selectedProject.AreaPaths;
                 view.SelectedTfsTeam = Settings.Default.TfsTeam;
                 view.SelectedAreaPath = Settings.Default.TfsAreaPath;
+                view.WarnAboutImpersonation = (selectedProject.Users.CanImpersonate == false);
                 validateSettings();
             }
             else

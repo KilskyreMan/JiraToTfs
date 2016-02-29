@@ -134,44 +134,42 @@ namespace JiraToTfs.View
             }
         }
 
-        public void ShowCurrentTfsFieldValues(IEnumerable<KeyValuePair<string, string>> fields,
-            AllowedValuesForField allowedValuesForField)
+        public void ShowDefaultTfsFieldValues(TfsFieldCollection fields)
         {
             tfsFieldGrid.Rows.Clear();
-            foreach (var field in fields)
+            foreach (string fieldName in fields.EditableFields)
             {
+                TfsField field = fields[fieldName];
                 var row = new DataGridViewRow();
                 row.CreateCells(tfsFieldGrid);
-                row.Cells[0] = new DataGridViewTextBoxCell();
-                row.Cells[0].Value = field.Key;
-                var allowed = allowedValuesForField(field.Key);
-                if (allowed.Count > 0)
+                row.Cells[0] = new DataGridViewImageCell(false) { Value = (field.IsRequired? Properties.Resources.mandatory : Properties.Resources.optional) };
+                if (field.IsRequired)
                 {
-                    row.Cells[1] = new DataGridViewComboBoxCell();
-                    var cell = row.Cells[1] as DataGridViewComboBoxCell;
-                    cell.DataSource = allowed;
+                    row.Cells[0].Value = Properties.Resources.mandatory;
+                }
+                row.Cells[1] = new DataGridViewTextBoxCell { Value = fieldName };
+                if (field.AllowedValues.Count > 0)
+                {
+                    row.Cells[2] = new DataGridViewComboBoxCell();
+                    var cell = (DataGridViewComboBoxCell)row.Cells[2];
+                    cell.DataSource = field.AllowedValues;
                 }
                 else
                 {
-                    row.Cells[1] = new DataGridViewTextBoxCell();
+                    row.Cells[2] = new DataGridViewTextBoxCell();
                 }
-                if (String.IsNullOrEmpty(field.Value) == false)
-                {
-                    row.Cells[1].Value = field.Value;
-                }
+                row.Cells[2].Value = field.DefaultValue;
                 tfsFieldGrid.Rows.Add(row);
             }
         }
 
-        public IEnumerable<KeyValuePair<string, string>> GetCurrentTfsFieldValues()
+        public void GetDefaultTfsFieldValues(TfsFieldCollection fields)
         {
             foreach (DataGridViewRow row in tfsFieldGrid.Rows)
             {
-                string name = row.Cells[0].EditedFormattedValue.ToString(),
-                    Value = (row.Cells[1].EditedFormattedValue != null
-                        ? row.Cells[1].EditedFormattedValue.ToString()
-                        : "");
-                yield return new KeyValuePair<string, string>(name, Value);
+                string name = row.Cells[1].EditedFormattedValue.ToString(),
+                       value = (row.Cells[2].EditedFormattedValue != null ? row.Cells[2].EditedFormattedValue.ToString() : "");
+                fields[name].DefaultValue = value;
             }
         }
 

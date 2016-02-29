@@ -135,6 +135,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="JiraToTfs.ico" />
+    <Content Include="View\mandatory.png" />
+    <None Include="View\optional.png" />
+    <None Include="View\info.png" />
     <None Include="View\pleasewait.gif" />
   </ItemGroup>
   <ItemGroup>

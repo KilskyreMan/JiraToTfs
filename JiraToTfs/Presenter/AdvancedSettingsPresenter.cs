@@ -14,7 +14,7 @@ namespace JiraToTfs.Presenter
 
         private void updatePriorityFields()
         {
-            var fields = new List<string>(advancedSettings.TfsProject.WorkItemFields);
+            var fields = new List<string>(advancedSettings.TfsProject.Fields.Names);
             view.ListAvailablePriorityFields(fields, advancedSettings.TfsPriorityMap.PriorityField);
             view.ListAvailableFromPriorities(advancedSettings.TfsPriorityMap.JiraPriorities, MapPriorityTo);
         }
@@ -33,11 +33,11 @@ namespace JiraToTfs.Presenter
 
             if (advancedSettings.TfsSettingsAvailable)
             {
-                view.ShowCurrentTfsFieldValues(advancedSettings.TfsFieldMap.Fields, AllowedValuesForField);
-                view.SetDefaultAsignees(advancedSettings.TfsProject.TfsUsers.DefaultAsignees,
-                    advancedSettings.TfsProject.TfsUsers.CurrentDefaultAsignee);
-                view.SetDefaultCreators(advancedSettings.TfsProject.TfsUsers.DefaultCreators,
-                    advancedSettings.TfsProject.TfsUsers.CurrentDefaultCreator);
+                view.ShowDefaultTfsFieldValues(advancedSettings.TfsFieldMap.Fields);
+                view.SetDefaultAsignees(advancedSettings.TfsProject.Users.DefaultAsignees,
+                    advancedSettings.TfsProject.Users.CurrentDefaultAsignee);
+                view.SetDefaultCreators(advancedSettings.TfsProject.Users.DefaultCreators,
+                    advancedSettings.TfsProject.Users.CurrentDefaultCreator);
                 view.DisplayAvailableStates(advancedSettings.TfsStateMap.WorkItemNames, NextStatesFor);
                 updatePriorityFields();
             }
@@ -59,10 +59,11 @@ namespace JiraToTfs.Presenter
         public void OnSave()
         {
             advancedSettings.JiraTypeMap.Save(view.GetCurrentTicketTypeMappings());
-            advancedSettings.TfsFieldMap.Save(view.GetCurrentTfsFieldValues());
-            advancedSettings.TfsProject.TfsUsers.CurrentDefaultAsignee = view.GetCurrentDefaultAssignee();
-            advancedSettings.TfsProject.TfsUsers.CurrentDefaultCreator = view.GetCurrentDefaultCreator();
-            advancedSettings.TfsProject.TfsUsers.Save();
+            view.GetDefaultTfsFieldValues(advancedSettings.TfsFieldMap.Fields);
+            advancedSettings.TfsFieldMap.Save();
+            advancedSettings.TfsProject.Users.CurrentDefaultAsignee = view.GetCurrentDefaultAssignee();
+            advancedSettings.TfsProject.Users.CurrentDefaultCreator = view.GetCurrentDefaultCreator();
+            advancedSettings.TfsProject.Users.Save();
             advancedSettings.TfsStateMap.Save(view.GetCurrentStates());
             advancedSettings.TfsPriorityMap.Save(view.GetCurrentPriorityField(), view.GetCurrentPriorities());
         }
@@ -110,11 +111,6 @@ namespace JiraToTfs.Presenter
         {
             states = advancedSettings.TfsStateMap.GetAvailableNextStatesFor(workItemName);
             defaultState = advancedSettings.TfsStateMap.GetSelectedApprovedStateFor(workItemName);
-        }
-
-        public List<string> AllowedValuesForField(string fieldName)
-        {
-            return advancedSettings.TfsProject.AllowedValuesForField(fieldName);
         }
 
         public string MapPriorityTo(string priorityToMap)

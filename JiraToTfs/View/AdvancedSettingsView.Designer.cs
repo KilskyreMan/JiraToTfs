@@ -31,11 +31,11 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AdvancedSettingsView));
             this.CancelBtn = new System.Windows.Forms.Button();
             this.SaveBtn = new System.Windows.Forms.Button();
@@ -51,8 +51,6 @@
             this.checkFieldSettings = new System.Windows.Forms.Label();
             this.noFieldsFound = new System.Windows.Forms.Label();
             this.tfsFieldGrid = new System.Windows.Forms.DataGridView();
-            this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.tfsFieldValueColumn = new System.Windows.Forms.DataGridViewComboBoxColumn();
             this.tfsUserTab = new System.Windows.Forms.TabPage();
             this.defaultUserLabel = new System.Windows.Forms.Label();
             this.defaultCreatorList = new System.Windows.Forms.ComboBox();
@@ -81,6 +79,9 @@
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.customPriorityNote = new System.Windows.Forms.Label();
+            this.Required = new System.Windows.Forms.DataGridViewImageColumn();
+            this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.tfsFieldValueColumn = new System.Windows.Forms.DataGridViewComboBoxColumn();
             this.tabControl.SuspendLayout();
             this.typeTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.jiraGrid)).BeginInit();
@@ -235,7 +236,7 @@
             this.fieldTab.Padding = new System.Windows.Forms.Padding(3);
             this.fieldTab.Size = new System.Drawing.Size(521, 567);
             this.fieldTab.TabIndex = 1;
-            this.fieldTab.Text = "Default TFS Field Values";
+            this.fieldTab.Text = "Default Field Values";
             // 
             // checkFieldSettings
             // 
@@ -278,6 +279,7 @@
             this.tfsFieldGrid.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
             this.tfsFieldGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.tfsFieldGrid.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.Required,
             this.dataGridViewTextBoxColumn1,
             this.tfsFieldValueColumn});
             this.tfsFieldGrid.Location = new System.Drawing.Point(0, 17);
@@ -288,27 +290,6 @@
             this.tfsFieldGrid.ShowRowErrors = false;
             this.tfsFieldGrid.Size = new System.Drawing.Size(518, 550);
             this.tfsFieldGrid.TabIndex = 19;
-            // 
-            // dataGridViewTextBoxColumn1
-            // 
-            this.dataGridViewTextBoxColumn1.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Info;
-            dataGridViewCellStyle4.ForeColor = System.Drawing.Color.Black;
-            this.dataGridViewTextBoxColumn1.DefaultCellStyle = dataGridViewCellStyle4;
-            this.dataGridViewTextBoxColumn1.FillWeight = 50F;
-            this.dataGridViewTextBoxColumn1.HeaderText = "TFS Field";
-            this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
-            this.dataGridViewTextBoxColumn1.ReadOnly = true;
-            this.dataGridViewTextBoxColumn1.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridViewTextBoxColumn1.Width = 77;
-            // 
-            // tfsFieldValueColumn
-            // 
-            this.tfsFieldValueColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.tfsFieldValueColumn.DisplayStyle = System.Windows.Forms.DataGridViewComboBoxDisplayStyle.ComboBox;
-            this.tfsFieldValueColumn.HeaderText = "Defaults to";
-            this.tfsFieldValueColumn.Name = "tfsFieldValueColumn";
-            this.tfsFieldValueColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
             // 
             // tfsUserTab
             // 
@@ -326,7 +307,7 @@
             this.tfsUserTab.Padding = new System.Windows.Forms.Padding(3);
             this.tfsUserTab.Size = new System.Drawing.Size(521, 567);
             this.tfsUserTab.TabIndex = 2;
-            this.tfsUserTab.Text = "Default TFS User";
+            this.tfsUserTab.Text = "Default User";
             // 
             // defaultUserLabel
             // 
@@ -420,7 +401,7 @@
             this.workItemTab.Padding = new System.Windows.Forms.Padding(3);
             this.workItemTab.Size = new System.Drawing.Size(521, 567);
             this.workItemTab.TabIndex = 3;
-            this.workItemTab.Text = "New TFS WorkItems";
+            this.workItemTab.Text = "New Work Items";
             // 
             // seeMicrosoftLink
             // 
@@ -521,7 +502,7 @@
             this.tfsBugTab.Padding = new System.Windows.Forms.Padding(3);
             this.tfsBugTab.Size = new System.Drawing.Size(521, 567);
             this.tfsBugTab.TabIndex = 4;
-            this.tfsBugTab.Text = "TFS Bug Priority";
+            this.tfsBugTab.Text = "Bug Priorities";
             // 
             // priorityPanel
             // 
@@ -647,6 +628,36 @@
             this.customPriorityNote.TabIndex = 22;
             this.customPriorityNote.Text = "Some organisations define their own unique prioritisation listing for bugs.";
             // 
+            // Required
+            // 
+            this.Required.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            this.Required.HeaderText = "Required";
+            this.Required.Name = "Required";
+            this.Required.ReadOnly = true;
+            this.Required.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.Required.Width = 75;
+            // 
+            // dataGridViewTextBoxColumn1
+            // 
+            this.dataGridViewTextBoxColumn1.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Info;
+            dataGridViewCellStyle4.ForeColor = System.Drawing.Color.Black;
+            this.dataGridViewTextBoxColumn1.DefaultCellStyle = dataGridViewCellStyle4;
+            this.dataGridViewTextBoxColumn1.FillWeight = 50F;
+            this.dataGridViewTextBoxColumn1.HeaderText = "TFS Field";
+            this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
+            this.dataGridViewTextBoxColumn1.ReadOnly = true;
+            this.dataGridViewTextBoxColumn1.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridViewTextBoxColumn1.Width = 77;
+            // 
+            // tfsFieldValueColumn
+            // 
+            this.tfsFieldValueColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.tfsFieldValueColumn.DisplayStyle = System.Windows.Forms.DataGridViewComboBoxDisplayStyle.ComboBox;
+            this.tfsFieldValueColumn.HeaderText = "Defaults to";
+            this.tfsFieldValueColumn.Name = "tfsFieldValueColumn";
+            this.tfsFieldValueColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            // 
             // AdvancedSettingsView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -697,8 +708,6 @@
         private System.Windows.Forms.DataGridView jiraGrid;
         private System.Windows.Forms.DataGridView tfsFieldGrid;
         private System.Windows.Forms.Label checkFieldSettings;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
-        private System.Windows.Forms.DataGridViewComboBoxColumn tfsFieldValueColumn;
         private System.Windows.Forms.Label noFieldsFound;
         private System.Windows.Forms.TabPage tfsUserTab;
         private System.Windows.Forms.Label checkUserSettings;
@@ -730,5 +739,8 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn toPriorityColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn jiraColumn;
         private System.Windows.Forms.DataGridViewComboBoxColumn maptoColumn;
+        private System.Windows.Forms.DataGridViewImageColumn Required;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
+        private System.Windows.Forms.DataGridViewComboBoxColumn tfsFieldValueColumn;
     }
 }

@@ -1,59 +1,37 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 
 namespace TicketImporter
 {
     public class TfsFieldMap
     {
-        public TfsFieldMap(TfsProject tfsProject)
+        public TfsFieldMap(TfsFieldCollection fields)
         {
-            map = new Dictionary<string, string>();
-            this.tfsProject = tfsProject;
+            this.fields = fields;
 
-            if (this.tfsProject != null)
+            if (this.fields != null)
             {
                 var storedMap = SettingsStore.Load(key);
-                foreach (var fieldName in this.tfsProject.WorkItemFields)
+                foreach (var fieldName in this.fields.Names)
                 {
-                    if (storedMap.ContainsKey(fieldName) == false)
-                    {
-                        map.Add(fieldName, "");
-                    }
-                    else
-                    {
-                        map.Add(fieldName, storedMap[fieldName]);
-                    }
+                    this.fields[fieldName].DefaultValue = storedMap.ContainsKey(fieldName) == false ? "" : storedMap[fieldName];
                 }
             }
         }
 
-        public int Count
+        public TfsFieldCollection Fields
         {
-            get { return map.Count; }
+            get { return fields; }
         }
 
-        public IEnumerable<KeyValuePair<string, string>> Fields
+        public void Save()
         {
-            get { return map; }
-        }
-
-        public void Save(IEnumerable<KeyValuePair<string, string>> source)
-        {
-            map.Clear();
-            var keyValuePairs = source as KeyValuePair<string, string>[] ?? source.ToArray();
-            foreach (var kp in keyValuePairs)
-            {
-                map.Add(kp.Key, kp.Value);
-            }
-            SettingsStore.Save(key, keyValuePairs);
+            var map = fields.Names.ToDictionary(name => name, name => fields[name].DefaultValue);
+            SettingsStore.Save(key, map);
         }
 
         #region private class members
-
-        private readonly Dictionary<string, string> map;
-        private readonly TfsProject tfsProject;
+        private readonly TfsFieldCollection fields;
         private const string key = "TfsFieldValues";
-
         #endregion
     }
 }

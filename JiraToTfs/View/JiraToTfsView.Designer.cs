@@ -53,14 +53,20 @@
             this.areaPaths = new System.Windows.Forms.ComboBox();
             this.label10 = new System.Windows.Forms.Label();
             this.includeAttachments = new System.Windows.Forms.CheckBox();
-            this.pleaseWaitSpinner = new System.Windows.Forms.PictureBox();
             this.viewReport = new System.Windows.Forms.LinkLabel();
+            this.impersonationPanel = new System.Windows.Forms.Panel();
+            this.label11 = new System.Windows.Forms.Label();
+            this.impersonationLink = new System.Windows.Forms.LinkLabel();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.pleaseWaitSpinner = new System.Windows.Forms.PictureBox();
+            this.impersonationPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pleaseWaitSpinner)).BeginInit();
             this.SuspendLayout();
             // 
             // ImportBtn
             // 
-            this.ImportBtn.Location = new System.Drawing.Point(109, 330);
+            this.ImportBtn.Location = new System.Drawing.Point(109, 334);
             this.ImportBtn.Name = "ImportBtn";
             this.ImportBtn.Size = new System.Drawing.Size(253, 24);
             this.ImportBtn.TabIndex = 10;
@@ -71,7 +77,7 @@
             // CloseBtn
             // 
             this.CloseBtn.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.CloseBtn.Location = new System.Drawing.Point(353, 430);
+            this.CloseBtn.Location = new System.Drawing.Point(353, 434);
             this.CloseBtn.Name = "CloseBtn";
             this.CloseBtn.Size = new System.Drawing.Size(75, 23);
             this.CloseBtn.TabIndex = 11;
@@ -192,14 +198,14 @@
             this.label7.AutoSize = true;
             this.label7.Location = new System.Drawing.Point(24, 98);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(59, 13);
+            this.label7.Size = new System.Drawing.Size(61, 13);
             this.label7.TabIndex = 17;
-            this.label7.Text = "Jira Project";
+            this.label7.Text = "Project Key";
             // 
             // progressMessage
             // 
             this.progressMessage.ForeColor = System.Drawing.Color.Red;
-            this.progressMessage.Location = new System.Drawing.Point(106, 370);
+            this.progressMessage.Location = new System.Drawing.Point(106, 374);
             this.progressMessage.Name = "progressMessage";
             this.progressMessage.Size = new System.Drawing.Size(332, 18);
             this.progressMessage.TabIndex = 18;
@@ -226,7 +232,7 @@
             // detailedProgress
             // 
             this.detailedProgress.ForeColor = System.Drawing.Color.Blue;
-            this.detailedProgress.Location = new System.Drawing.Point(106, 390);
+            this.detailedProgress.Location = new System.Drawing.Point(106, 399);
             this.detailedProgress.Name = "detailedProgress";
             this.detailedProgress.Size = new System.Drawing.Size(332, 26);
             this.detailedProgress.TabIndex = 21;
@@ -234,7 +240,7 @@
             // advancedSettingsBtn
             // 
             this.advancedSettingsBtn.AutoSize = true;
-            this.advancedSettingsBtn.Location = new System.Drawing.Point(109, 304);
+            this.advancedSettingsBtn.Location = new System.Drawing.Point(109, 308);
             this.advancedSettingsBtn.Name = "advancedSettingsBtn";
             this.advancedSettingsBtn.Size = new System.Drawing.Size(97, 13);
             this.advancedSettingsBtn.TabIndex = 4;
@@ -246,7 +252,7 @@
             // 
             this.label9.AutoSize = true;
             this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold);
-            this.label9.Location = new System.Drawing.Point(16, 255);
+            this.label9.Location = new System.Drawing.Point(16, 259);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(70, 13);
             this.label9.TabIndex = 23;
@@ -274,28 +280,17 @@
             // includeAttachments
             // 
             this.includeAttachments.AutoSize = true;
-            this.includeAttachments.Location = new System.Drawing.Point(109, 278);
+            this.includeAttachments.Location = new System.Drawing.Point(109, 282);
             this.includeAttachments.Name = "includeAttachments";
             this.includeAttachments.Size = new System.Drawing.Size(123, 17);
             this.includeAttachments.TabIndex = 9;
             this.includeAttachments.Text = "&Include Attachments";
             this.includeAttachments.UseVisualStyleBackColor = true;
             // 
-            // pleaseWaitSpinner
-            // 
-            this.pleaseWaitSpinner.Image = global::JiraToTfs.Properties.Resources.pleasewait;
-            this.pleaseWaitSpinner.Location = new System.Drawing.Point(59, 368);
-            this.pleaseWaitSpinner.Name = "pleaseWaitSpinner";
-            this.pleaseWaitSpinner.Size = new System.Drawing.Size(32, 32);
-            this.pleaseWaitSpinner.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
-            this.pleaseWaitSpinner.TabIndex = 25;
-            this.pleaseWaitSpinner.TabStop = false;
-            this.pleaseWaitSpinner.Visible = false;
-            // 
             // viewReport
             // 
             this.viewReport.AutoSize = true;
-            this.viewReport.Location = new System.Drawing.Point(106, 390);
+            this.viewReport.Location = new System.Drawing.Point(106, 394);
             this.viewReport.Name = "viewReport";
             this.viewReport.Size = new System.Drawing.Size(65, 13);
             this.viewReport.TabIndex = 26;
@@ -304,13 +299,67 @@
             this.viewReport.Visible = false;
             this.viewReport.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.viewReport_LinkClicked);
             // 
+            // impersonationPanel
+            // 
+            this.impersonationPanel.Controls.Add(this.label11);
+            this.impersonationPanel.Controls.Add(this.impersonationLink);
+            this.impersonationPanel.Controls.Add(this.pictureBox1);
+            this.impersonationPanel.Location = new System.Drawing.Point(109, 241);
+            this.impersonationPanel.Name = "impersonationPanel";
+            this.impersonationPanel.Size = new System.Drawing.Size(253, 18);
+            this.impersonationPanel.TabIndex = 27;
+            this.impersonationPanel.Visible = false;
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(91, 2);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(69, 13);
+            this.label11.TabIndex = 30;
+            this.label11.Text = "not enabled. ";
+            // 
+            // impersonationLink
+            // 
+            this.impersonationLink.AutoSize = true;
+            this.impersonationLink.Location = new System.Drawing.Point(22, 2);
+            this.impersonationLink.Name = "impersonationLink";
+            this.impersonationLink.Size = new System.Drawing.Size(73, 13);
+            this.impersonationLink.TabIndex = 29;
+            this.impersonationLink.TabStop = true;
+            this.impersonationLink.Text = "Impersonation";
+            this.impersonationLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.impersonationLink_LinkClicked);
+            this.impersonationLink.MouseClick += new System.Windows.Forms.MouseEventHandler(this.impersonationLink_MouseClick);
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Image = global::JiraToTfs.Properties.Resources.info;
+            this.pictureBox1.Location = new System.Drawing.Point(3, 1);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(18, 18);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
+            this.pictureBox1.TabIndex = 28;
+            this.pictureBox1.TabStop = false;
+            // 
+            // pleaseWaitSpinner
+            // 
+            this.pleaseWaitSpinner.Image = global::JiraToTfs.Properties.Resources.pleasewait;
+            this.pleaseWaitSpinner.Location = new System.Drawing.Point(59, 372);
+            this.pleaseWaitSpinner.Name = "pleaseWaitSpinner";
+            this.pleaseWaitSpinner.Size = new System.Drawing.Size(32, 32);
+            this.pleaseWaitSpinner.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
+            this.pleaseWaitSpinner.TabIndex = 25;
+            this.pleaseWaitSpinner.TabStop = false;
+            this.pleaseWaitSpinner.Visible = false;
+            // 
             // JiraToTfsView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
             this.CancelButton = this.CloseBtn;
-            this.ClientSize = new System.Drawing.Size(455, 471);
+            this.ClientSize = new System.Drawing.Size(452, 471);
+            this.Controls.Add(this.impersonationPanel);
             this.Controls.Add(this.viewReport);
             this.Controls.Add(this.pleaseWaitSpinner);
             this.Controls.Add(this.includeAttachments);
@@ -345,6 +394,9 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Jira to Tfs";
             this.Shown += new System.EventHandler(this.JiraToTfsView_Shown);
+            this.impersonationPanel.ResumeLayout(false);
+            this.impersonationPanel.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pleaseWaitSpinner)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -379,5 +431,9 @@
         private System.Windows.Forms.CheckBox includeAttachments;
         private System.Windows.Forms.PictureBox pleaseWaitSpinner;
         private System.Windows.Forms.LinkLabel viewReport;
+        private System.Windows.Forms.Panel impersonationPanel;
+        private System.Windows.Forms.LinkLabel impersonationLink;
+        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.Label label11;
     }
 }

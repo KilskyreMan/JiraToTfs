@@ -32,11 +32,13 @@ namespace TicketImporter
 
             if (tfs != null)
             {
+                fields = TfsFieldFactory.GetFieldsFor(tfs, project);
                 var workItemStore = tfs.GetService<WorkItemStore>();
-                fieldDefinitions = workItemStore.Projects[this.project].Store.FieldDefinitions;
-                if (fieldDefinitions.Contains("Description"))
+
+                TfsField descriptionField = fields["Description"];
+                if (descriptionField != null)
                 {
-                    supportsHtml = (fieldDefinitions["Description"].FieldType == FieldType.Html);
+                    supportsHtml = descriptionField.SupportsHtml;
                 }
                 tfsUsers = new TfsUsers(this);
                 tfsUsers.OnFailedToImpersonate += OnWarn;
@@ -59,13 +61,13 @@ namespace TicketImporter
         {
             get
             {
-                var teamNames = new List<string>();
-                if (fieldDefinitions != null &&
-                    fieldDefinitions.Contains("Team"))
+                var teams = new List<string>();
+                TfsField teamField = fields["Team"];
+                if (teamField != null)
                 {
-                    teamNames.AddRange(fieldDefinitions["Team"].AllowedValues.Cast<string>());
+                    teams = teamField.AllowedValues;
                 }
-                return teamNames;
+                return teams;
             }
         }
 
@@ -103,32 +105,12 @@ namespace TicketImporter
             get { return areaPaths; }
         }
 
-        public IEnumerable<string> WorkItemFields
+        public TfsFieldCollection Fields
         {
-            get
-            {
-                var prohibitedFields = new HashSet<CoreField>
-                {
-                    CoreField.AreaId,
-                    CoreField.AreaPath,
-                    CoreField.IterationId,
-                    CoreField.IterationPath,
-                    CoreField.CreatedBy,
-                    CoreField.CreatedDate
-                };
-
-                if (fieldDefinitions != null)
-                {
-                    foreach (var field in fieldDefinitions.Cast<FieldDefinition>().Where(
-                        field => prohibitedFields.Contains((CoreField) field.Id) == false && field.IsComputed == false && field.IsEditable))
-                    {
-                        yield return field.Name;
-                    }
-                }
-            }
+            get { return this.fields; }
         }
 
-        public TfsUsers TfsUsers
+        public TfsUsers Users
         {
             get { return tfsUsers; }
         }
@@ -152,25 +134,12 @@ namespace TicketImporter
 
         public List<string> AllowedValuesForField(string fieldName)
         {
-            var allowedValues = new List<string>();
-            if (fieldDefinitions != null)
-            {
-                foreach (var field in fieldDefinitions.Cast<FieldDefinition>().
-                    Where(field => field.AllowedValues != null &&
-                         (string.Compare(fieldName, field.Name, StringComparison.OrdinalIgnoreCase) == 0 ||
-                          string.Compare(fieldName, field.ReferenceName, StringComparison.OrdinalIgnoreCase) == 0)))
-                {
-                    allowedValues.AddRange(field.AllowedValues.Cast<string>());
-                    break;
-                }
-            }
-            return allowedValues;
+            TfsField field = fields[fieldName];
+            return (field != null? field.AllowedValues : new List<String>());
         }
 
         #region private class variables
-
         private readonly TfsTeamProjectCollection tfs;
-        private readonly FieldDefinitionCollection fieldDefinitions;
         private readonly string project;
         private readonly string serverUri;
         private string assignedTeam;
@@ -187,7 +156,7 @@ namespace TicketImporter
         private string assignedAreaPath;
         private readonly string processTemplateName;
         private readonly ImportSummary importSummary;
-
+        private readonly TfsFieldCollection fields;
         #endregion
 
         #region Progress utility methods
@@ -230,16 +199,15 @@ namespace TicketImporter
 
         private void assignToField(WorkItem workItem, string fieldName, object value)
         {
-            if (workItem.Fields.Contains(fieldName))
+            TfsField field = fields[fieldName];
+            if (field != null && workItem.Fields.Contains(fieldName))
             {
-                workItem.Fields[fieldName].Value = value;
+                workItem.Fields[fieldName].Value = field.ToFieldValue(value);
             }
         }
 
         private WorkItem toWorkItem(Ticket toImport)
         {
-            WorkItemType workItemType;
-
             var tfs_impersonated = tfsUsers.ImpersonateDefaultCreator();
             if (tfsUsers.CanAddTicket(toImport.CreatedBy))
             {
@@ -249,17 +217,14 @@ namespace TicketImporter
             var workItemStore = (WorkItemStore) tfs_impersonated.GetService(typeof (WorkItemStore));
             var workItemTypes = workItemStore.Projects[project].WorkItemTypes;
 
-            workItemType = workItemTypes[toImport.TicketType];
+            var workItemType = workItemTypes[toImport.TicketType];
             var workItem = new WorkItem(workItemType);
 
-            if (tfsFieldMap != null)
+            foreach (string fieldName in tfsFieldMap.Fields.EditableFields)
             {
-                foreach (var field in tfsFieldMap.Fields)
+                if (string.IsNullOrEmpty(fields[fieldName].DefaultValue) == false)
                 {
-                    if (string.IsNullOrWhiteSpace(field.Value) == false)
-                    {
-                        assignToField(workItem, field.Key, field.Value);
-                    }
+                    assignToField(workItem, fieldName, fields[fieldName].DefaultValue);
                 }
             }
 
@@ -371,7 +336,7 @@ namespace TicketImporter
             if (ableToAdd)
             {
                 this.externalReferenceTag = externalReferenceTag;
-                tfsFieldMap = new TfsFieldMap(this);
+                tfsFieldMap = new TfsFieldMap(Fields);
                 tfsStateMap = new TfsStateMap(this);
                 tfsPriorityMap = new TfsPriorityMap();
                 newlyImported = new Dictionary<Ticket, WorkItem>();
@@ -743,7 +708,7 @@ namespace TicketImporter
                 progressNotifer.UpdateProgress();
 
                 batchFile = generateBatchFile();
-                TfsUsers.ReleaseImpersonations();
+                Users.ReleaseImpersonations();
                 progressNotifer.UpdateProgress();
             }
 

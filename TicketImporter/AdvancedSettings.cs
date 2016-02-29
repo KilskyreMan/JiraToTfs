@@ -15,7 +15,7 @@
             var jira = jiraProject;
             this.tfsProject = tfsProject;
             jiraTypeMap = new JiraTypeMap(jira, this.tfsProject);
-            tfsFieldMap = new TfsFieldMap(this.tfsProject);
+            tfsFieldMap = new TfsFieldMap(this.tfsProject.Fields);
             tfsStateMap = new TfsStateMap(this.tfsProject);
             tfsPriorityMap = new TfsPriorityMap();
             this.showFirst = showFirst;
@@ -28,7 +28,7 @@
 
         public bool TfsSettingsAvailable
         {
-            get { return (tfsFieldMap.Count > 0); }
+            get { return (tfsFieldMap.Fields.Count > 0); }
         }
 
         public bool JiraSettingsAvailable

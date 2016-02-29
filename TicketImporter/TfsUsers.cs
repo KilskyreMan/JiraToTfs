@@ -266,18 +266,19 @@ namespace TicketImporter
                 var ims = tfs.GetService<IIdentityManagementService>();
                 foreach (var user in tfsUsers)
                 {
-                    var toImpersonate = ims.ReadIdentity(IdentitySearchFactor.AccountName,
-                        user.DisplayName, MembershipQuery.None,
-                        ReadIdentityOptions.None);
-                    if (String.Compare(tfs.AuthorizedIdentity.DisplayName, toImpersonate.DisplayName) != 0)
+                    var toImpersonate = ims.ReadIdentity(IdentitySearchFactor.DisplayName, user.DisplayName, MembershipQuery.None, ReadIdentityOptions.None);
+                    if (toImpersonate != null)
                     {
-                        using (var tfs_impersonated = new TfsTeamProjectCollection(tfs.Uri, toImpersonate.Descriptor))
+                        if (string.CompareOrdinal(tfs.AuthorizedIdentity.DisplayName, toImpersonate.DisplayName) != 0)
                         {
-                            // Will raise an exception if impersonation failed.
-                            var authorised = tfs_impersonated.AuthorizedIdentity.DisplayName;
-                            ableToImpersonate = true;
+                            using (var tfs_impersonated = new TfsTeamProjectCollection(tfs.Uri, toImpersonate.Descriptor))
+                            {
+                                // Will raise an exception if impersonation failed.
+                                var authorised = tfs_impersonated.AuthorizedIdentity.DisplayName;
+                                ableToImpersonate = true;
+                            }
+                            break;
                         }
-                        break;
                     }
                 }
             }
