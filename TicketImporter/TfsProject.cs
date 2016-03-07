@@ -518,8 +518,9 @@ namespace TicketImporter
         {
             previouslyImported = new Dictionary<string, WorkItem>();
             var workItemStore = (WorkItemStore) tfs.GetService(typeof (WorkItemStore));
-            var queryResults =
-                workItemStore.Query("Select [ID] From WorkItems where [Hyperlink Count] > 0");
+
+            var query = string.Format("Select [ID] From WorkItems where [Team Project] = '{0}' AND [Hyperlink Count] > 0", project);
+            var queryResults = workItemStore.Query(query);
             if (queryResults.Count > 0)
             {
                 var externalRef = externalReferenceTag + " [";
