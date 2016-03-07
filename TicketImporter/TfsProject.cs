@@ -16,6 +16,28 @@ namespace TicketImporter
 {
     public class TfsProject : ITicketTarget, IAvailableTicketTypes
     {
+        #region private class variables
+        private readonly TfsTeamProjectCollection tfs;
+        private readonly string project;
+        private readonly string serverUri;
+        private string assignedTeam;
+        private TfsFieldMap tfsFieldMap;
+        private TfsStateMap tfsStateMap;
+        private TfsPriorityMap tfsPriorityMap;
+        private Dictionary<Ticket, WorkItem> newlyImported;
+        private Dictionary<string, WorkItem> previouslyImported;
+        private string externalReferenceTag;
+        private readonly TfsUsers tfsUsers;
+        private readonly bool supportsHtml;
+        private bool failedAttachments;
+        private readonly List<string> areaPaths;
+        private string assignedAreaPath;
+        private readonly string processTemplateName;
+        private readonly ImportSummary importSummary;
+        private readonly TfsFieldCollection fields;
+        private const int max_Description_length = 32000;
+        #endregion
+
         public TfsProject(string serverUri, string project)
         {
             this.serverUri = serverUri;
@@ -138,27 +160,6 @@ namespace TicketImporter
             return (field != null? field.AllowedValues : new List<String>());
         }
 
-        #region private class variables
-        private readonly TfsTeamProjectCollection tfs;
-        private readonly string project;
-        private readonly string serverUri;
-        private string assignedTeam;
-        private TfsFieldMap tfsFieldMap;
-        private TfsStateMap tfsStateMap;
-        private TfsPriorityMap tfsPriorityMap;
-        private Dictionary<Ticket, WorkItem> newlyImported;
-        private Dictionary<string, WorkItem> previouslyImported;
-        private string externalReferenceTag;
-        private readonly TfsUsers tfsUsers;
-        private readonly bool supportsHtml;
-        private bool failedAttachments;
-        private readonly List<string> areaPaths;
-        private string assignedAreaPath;
-        private readonly string processTemplateName;
-        private readonly ImportSummary importSummary;
-        private readonly TfsFieldCollection fields;
-        #endregion
-
         #region Progress utility methods
 
         private void onPercentComplete(int percentComplete)
@@ -220,16 +221,26 @@ namespace TicketImporter
             var workItemType = workItemTypes[toImport.TicketType];
             var workItem = new WorkItem(workItemType);
 
-            foreach (string fieldName in tfsFieldMap.Fields.EditableFields)
+            foreach (var fieldName in tfsFieldMap.Fields.EditableFields.
+                Where(fieldName => string.IsNullOrEmpty(fields[fieldName].DefaultValue) == false))
             {
-                if (string.IsNullOrEmpty(fields[fieldName].DefaultValue) == false)
-                {
-                    assignToField(workItem, fieldName, fields[fieldName].DefaultValue);
-                }
+                assignToField(workItem, fieldName, fields[fieldName].DefaultValue);
             }
 
             workItem.Title = toImport.Summary;
-            workItem.Description = toImport.Description;
+            var description = toImport.Description;
+
+            // TFS's limit on HTML / PlainText fields is 32k.
+            if (description.Length > max_Description_length)
+            {
+                var attachment = string.Format("{0} (Description).txt", toImport.ID);
+                description = "<p><b>Description stored as Attachment</b></p>";
+                description += "<ul><li>Description exceeds 32K.A limit imposed by TFS.</li>";
+                description += ("<li>See attachment \"" + attachment + "\"</li></ul>");
+            }
+
+            workItem.Description = description;
+            assignToField(workItem, "Repro Steps", description);
 
             assignToField(workItem, "Team", assignedTeam);
             tfsUsers.AssignUser(toImport.AssignedTo, workItem);
@@ -238,13 +249,16 @@ namespace TicketImporter
             assignToField(workItem, "Effort", toImport.StoryPoints);
             workItem.AreaPath = (string.IsNullOrWhiteSpace(assignedAreaPath) ? project : assignedAreaPath);
             assignToField(workItem, "External Reference", toImport.ID);
+            assignToField(workItem, tfsPriorityMap.PriorityField, tfsPriorityMap[toImport.Priority]);
 
             if (toImport.HasUrl)
             {
                 try
                 {
-                    var hl = new Hyperlink(toImport.Url);
-                    hl.Comment = string.Format("{0} [{1}]", externalReferenceTag, toImport.ID);
+                    var hl = new Hyperlink(toImport.Url)
+                    {
+                        Comment = string.Format("{0} [{1}]", externalReferenceTag, toImport.ID)
+                    };
                     workItem.Links.Add(hl);
                 }
                 catch
@@ -272,9 +286,7 @@ namespace TicketImporter
             {
                 c.Append("<br>");
             }
-
-            c.Append(
-                string.Format("<u><b>Additional {0} information</b></u><br>", externalReferenceTag));
+            c.Append(string.Format("<u><b>Additional {0} information</b></u><br>", externalReferenceTag));
 
             var rows = new List<Tuple<string, string>>
             {
@@ -298,10 +310,7 @@ namespace TicketImporter
                 c.Append(string.Format("<tr><td><b>{0}</b></td><td>{1}</td></tr>", row.Item1, row.Item2));
             }
             c.Append("</table>");
-
             workItem.History = c.ToString();
-
-            assignToField(workItem, tfsPriorityMap.PriorityField, tfsPriorityMap[toImport.Priority]);
 
             return workItem;
         }
@@ -389,6 +398,16 @@ namespace TicketImporter
                     }
                 }
 
+                if (toAdd.Description.Length > max_Description_length)
+                {
+                    var attachment =
+                        Path.Combine(Path.GetTempPath(), string.Format("{0} (Description).txt", toAdd.ID));
+                    File.WriteAllText(attachment, toAdd.Description);
+                    var toAttach =
+                        new Microsoft.TeamFoundation.WorkItemTracking.Client.Attachment(attachment);
+                    workItem.Attachments.Add(toAttach);
+                }
+
                 var attempts = workItem.AttachedFileCount + 1;
                 do
                 {
@@ -425,11 +444,15 @@ namespace TicketImporter
                 if (addedOk)
                 {
                     newlyImported[toAdd] = workItem;
+                    if (toAdd.Description.Length > max_Description_length)
+                    {
+                        importSummary.Warnings.Add(
+                            string.Format("Description for {0} - \"{1}\" stored as attachment. Exceeded 32k.", workItem.Id, workItem.Title));
+                    }
                     if (rejectedAttachments.Count > 0)
                     {
                         importSummary.Warnings.Add(
-                            string.Format("Failed to attach the following item(s) to {0} - \"{1}\"", workItem.Id,
-                                workItem.Title));
+                            string.Format("Failed to attach the following item(s) to {0} - \"{1}\"", workItem.Id, workItem.Title));
                         foreach (var file in rejectedAttachments)
                         {
                             importSummary.Warnings.Add(string.Format(" - {0}", file));

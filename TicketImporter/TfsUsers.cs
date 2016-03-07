@@ -128,6 +128,11 @@ namespace TicketImporter
                 var ims = tfsProject.Tfs.GetService<IIdentityManagementService>();
                 id = ims.ReadIdentity(IdentitySearchFactor.AccountName, tfsUser, MembershipQuery.None,
                     ReadIdentityOptions.None);
+                if (id == null)
+                {
+                    id = ims.ReadIdentity(IdentitySearchFactor.DisplayName, tfsUser, MembershipQuery.None,
+                        ReadIdentityOptions.None);
+                }
             }
             return id;
         }

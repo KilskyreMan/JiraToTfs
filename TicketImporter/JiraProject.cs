@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using RestSharp.Extensions;
 using TechTalk.JiraRestClient;
 using TicketImporter.Interface;
 using TrackProgress;
@@ -76,7 +77,7 @@ namespace TicketImporter
                 var ticket = new Ticket();
                 ticket.TicketType = map[jiraTicket.fields.issuetype.name];
                 ticket.ID = jiraTicket.key;
-                ticket.Summary = jiraTicket.fields.summary;
+                ticket.Summary = JiraString.StripNonPrintable(jiraTicket.fields.summary);
 
                 var status = jiraTicket.fields.status.statusCategory.key.ToUpper();
                 switch (status)
@@ -97,11 +98,11 @@ namespace TicketImporter
 
                 ticket.Parent = jiraTicket.fields.parent.key;
 
-                ticket.Description = jiraTicket.fields.description;
+                ticket.Description = JiraString.StripNonPrintable(jiraTicket.fields.description);
                 if (PreferHtml &&
                     string.IsNullOrWhiteSpace(jiraTicket.renderedFields.description) == false)
                 {
-                    ticket.Description = jiraTicket.renderedFields.description;
+                    ticket.Description = JiraString.StripNonPrintable(jiraTicket.renderedFields.description);
                 }
                 ticket.CreatedOn = jiraTicket.fields.created;
                 ticket.LastModified = jiraTicket.fields.updated;

@@ -38,23 +38,11 @@ namespace TicketImporter
             {
                 char[] deliminators = {' ', ',', '.'};
 
-                var nameConstituents = new List<string>();
-                foreach (var item in Name.Split(deliminators))
-                {
-                    if (String.IsNullOrWhiteSpace(item) == false)
-                    {
-                        nameConstituents.Add(item.ToUpper());
-                    }
-                }
+                var nameConstituents = (from item in Name.Split(deliminators)
+                                        where string.IsNullOrWhiteSpace(item) == false select item.ToUpper()).ToList();
 
-                var userConstituents = new List<string>();
-                foreach (var item in user.Split(deliminators))
-                {
-                    if (String.IsNullOrWhiteSpace(item) == false)
-                    {
-                        userConstituents.Add(item.ToUpper());
-                    }
-                }
+                var userConstituents = (from item in user.Split(deliminators)
+                                        where string.IsNullOrWhiteSpace(item) == false select item.ToUpper()).ToList();
 
                 if (nameConstituents.Count == userConstituents.Count)
                 {
@@ -68,7 +56,7 @@ namespace TicketImporter
             }
             else
             {
-                isSame = String.Compare(eMail, user, true) == 0 ? true : false;
+                isSame = string.Compare(eMail, user, StringComparison.OrdinalIgnoreCase) == 0;
             }
 
             return isSame;

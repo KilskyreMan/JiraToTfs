@@ -69,6 +69,7 @@
     <Compile Include="TechTalk.JiraRestClient\JiraClient.cs" />
     <Compile Include="TechTalk.JiraRestClient\JiraClientException.cs" />
     <Compile Include="TechTalk.JiraRestClient\JiraUser.cs" />
+    <Compile Include="TechTalk.JiraRestClient\JiraString.cs" />
     <Compile Include="TechTalk.JiraRestClient\Priority.cs" />
     <Compile Include="TechTalk.JiraRestClient\ParentProject.cs" />
     <Compile Include="TechTalk.JiraRestClient\RemoteLink.cs" />
