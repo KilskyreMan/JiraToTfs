@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using TechTalk.JiraRestClient;
 
 namespace TicketImporter
 {
@@ -29,7 +30,7 @@ namespace TicketImporter
         public Comment(User author, string body, DateTime createdOn)
         {
             Author = author;
-            Body = body;
+            Body = JiraString.StripNonPrintable(body);
             CreatedOn = createdOn;
             Updated = createdOn;
         }
