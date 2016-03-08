@@ -14,7 +14,7 @@ namespace TicketImporter
             selectedInProgressState =
                 selectedApprovedState =
                     initialState = wit.NewWorkItem().State;
-            closedStates = new List<string> {"Done", "Inactive", "Closed", "Completed"};
+            closedStates = new List<string> {"Done", "Inactive", "Closed", "Completed", "Rejected", "Removed" };
             witd = wit.Export(true);
             gatherNextStates();
             findDonePath();
