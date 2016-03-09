@@ -193,17 +193,21 @@ namespace JiraToTfs.Presenter
             view.WaitEnd();
             if (e.Result == null)
             {
-                view.TfsProject = selectedProject.Project;
-                view.TfsTeams = selectedProject.Teams;
-                view.AreaPaths = selectedProject.AreaPaths;
-                view.SelectedTfsTeam = Settings.Default.TfsTeam;
-                view.SelectedAreaPath = Settings.Default.TfsAreaPath;
-                view.WarnAboutImpersonation = (selectedProject.Users.CanImpersonate == false);
-                validateSettings();
+                if (selectedProject != null)
+                {
+                    view.TfsProject = selectedProject.Project;
+                    view.TfsTeams = selectedProject.Teams;
+                    view.AreaPaths = selectedProject.AreaPaths;
+                    view.SelectedTfsTeam = Settings.Default.TfsTeam;
+                    view.SelectedAreaPath = Settings.Default.TfsAreaPath;
+                    view.WarnAboutImpersonation = (selectedProject.Users.CanImpersonate == false);
+                    validateSettings();
+                }
             }
             else
             {
                 var problem = e.Result as Exception;
+                log.Error(problem.ToString());
                 view.WarnUser(problem.Message);
             }
         }

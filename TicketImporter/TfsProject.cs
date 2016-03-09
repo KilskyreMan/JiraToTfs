@@ -52,9 +52,11 @@ namespace TicketImporter
                 tfs = TfsTeamProjectCollectionFactory.GetTeamProjectCollection(new Uri(serverUri));
             }
 
+            fields = TfsFieldFactory.GetFieldsFor(tfs, project);
+            tfsUsers = new TfsUsers(this);
+
             if (tfs != null)
             {
-                fields = TfsFieldFactory.GetFieldsFor(tfs, project);
                 var workItemStore = tfs.GetService<WorkItemStore>();
 
                 TfsField descriptionField = fields["Description"];
@@ -62,7 +64,6 @@ namespace TicketImporter
                 {
                     supportsHtml = descriptionField.SupportsHtml;
                 }
-                tfsUsers = new TfsUsers(this);
                 tfsUsers.OnFailedToImpersonate += OnWarn;
 
                 areaPaths = new List<string> { this.project };

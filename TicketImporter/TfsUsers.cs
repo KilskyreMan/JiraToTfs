@@ -260,7 +260,7 @@ namespace TicketImporter
                 /* Do nothing */
             }
 
-            return new TeamFoundationIdentity[1] {tfs.AuthorizedIdentity};
+            return  (tfs != null? new TeamFoundationIdentity[] { tfs.AuthorizedIdentity } : new TeamFoundationIdentity[0]);
         }
 
         private bool ableToImpersonate(TfsConnection tfs)
