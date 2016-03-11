@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.IO;
 using System.Reflection;
 using JiraToTfs.Properties;
 using JiraToTfs.View;
@@ -26,12 +27,12 @@ namespace JiraToTfs.Presenter
 
         public void Initialise()
         {
-            selectTfsProject(Settings.Default.TfsServerUri, Settings.Default.TfsProject);
             view.JiraServer = Settings.Default.JiraServer;
             view.JiraProject = Settings.Default.JiraProject;
             view.JiraUserName = Settings.Default.JiraUserName;
             view.TfsProject = Settings.Default.TfsProject;
             view.IncludeAttachments = true;
+            selectTfsProject(Settings.Default.TfsServerUri, Settings.Default.TfsProject);
         }
 
         public void SettingsHaveChanged()
@@ -43,7 +44,10 @@ namespace JiraToTfs.Presenter
         {
             var tfsPp = new TeamProjectPicker(TeamProjectPickerMode.SingleProject, false, new UICredentialsProvider());
             tfsPp.ShowDialog();
-            selectTfsProject(tfsPp.SelectedTeamProjectCollection.Uri.AbsoluteUri, tfsPp.SelectedProjects[0].Name);
+            if (tfsPp.SelectedTeamProjectCollection != null)
+            {
+                selectTfsProject(tfsPp.SelectedTeamProjectCollection.Uri.AbsoluteUri, tfsPp.SelectedProjects[0].Name);
+            }
         }
 
         public void StartImport()
@@ -143,7 +147,7 @@ namespace JiraToTfs.Presenter
                 {
                     whatsMissing += ", ";
                 }
-                whatsMissing += "Jira Project";
+                whatsMissing += "Project Key";
             }
             if (tfsTeam.Length == 0)
             {
@@ -209,6 +213,10 @@ namespace JiraToTfs.Presenter
                 var problem = e.Result as Exception;
                 log.Error(problem.ToString());
                 view.WarnUser(problem.Message);
+                if (problem.GetType() == typeof (FileNotFoundException))
+                {
+                    view.TfsDependenciesMissing();
+                }
             }
         }
 

@@ -73,29 +73,19 @@ namespace JiraToTfs.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap mandatory {
-            get {
-                object obj = ResourceManager.GetObject("mandatory", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap optional {
-            get {
-                object obj = ResourceManager.GetObject("optional", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         internal static System.Drawing.Bitmap pleasewait {
             get {
                 object obj = ResourceManager.GetObject("pleasewait", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap VisualStudio {
+            get {
+                object obj = ResourceManager.GetObject("VisualStudio", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

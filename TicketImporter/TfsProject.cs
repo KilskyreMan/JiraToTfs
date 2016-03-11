@@ -79,6 +79,29 @@ namespace TicketImporter
                 processTemplateName = getProcessTemplateName(this.project);
             }
         }
+        public static bool DependenciesInPlace
+        {
+            get
+            {
+                bool inPlace = true;
+                try
+                {
+                    using (var tfs = TfsTeamProjectCollectionFactory.GetTeamProjectCollection(new Uri("")))
+                    {
+                        // Do nothing, TFS (core dependencies) in place...
+                    }
+                }
+                catch (FileNotFoundException)
+                {
+                    inPlace = false;
+                }
+                catch
+                {
+                    // Do nothing. only interested in capturing FileNotFoundException.
+                }
+                return inPlace;
+            }
+        }
 
         public List<string> Teams
         {

@@ -83,7 +83,7 @@ namespace JiraToTfs.View
             presenter.OnShowReport();
         }
 
-        private void impersonationLink_MouseClick(object sender, MouseEventArgs e)
+        private void OnClickImpersonateHelp(object sender, MouseEventArgs e)
         {
 
         }
@@ -193,6 +193,7 @@ namespace JiraToTfs.View
             advancedSettingsBtn.Enabled = enable;
             tfsTeams.Enabled = enable;
             areaPaths.Enabled = enable;
+            includeAttachments.Enabled = enable;
         }
 
         public void ImportStarted()
@@ -226,7 +227,7 @@ namespace JiraToTfs.View
         {
             enableView(false);
             pleaseWaitSpinner.Visible = true;
-            progressMessage.Text = "Please wait, loading defaults ..";
+            InformUser("Please wait, loading defaults ..");
         }
 
         public void WaitEnd()
@@ -240,11 +241,22 @@ namespace JiraToTfs.View
             Process.Start(path);
         }
 
+        public void TfsDependenciesMissing()
+        {
+            var missingView = new MissingTfsDependenciesView();
+            missingView.ShowDialog(this);
+            Close();
+        }
         #endregion
 
         private void impersonationLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
+            Process.Start("https://github.com/KilskyreMan/JiraToTfs/wiki#turn-on-impersonation");
+        }
 
+        private void OnClickTellMeMore(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Process.Start("https://github.com/KilskyreMan/JiraToTfs/wiki");
         }
     }
 }

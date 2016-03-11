@@ -142,23 +142,18 @@ namespace JiraToTfs.View
                 TfsField field = fields[fieldName];
                 var row = new DataGridViewRow();
                 row.CreateCells(tfsFieldGrid);
-                row.Cells[0] = new DataGridViewImageCell(false) { Value = (field.IsRequired? Properties.Resources.mandatory : Properties.Resources.optional) };
-                if (field.IsRequired)
-                {
-                    row.Cells[0].Value = Properties.Resources.mandatory;
-                }
-                row.Cells[1] = new DataGridViewTextBoxCell { Value = fieldName };
+                row.Cells[0] = new DataGridViewTextBoxCell { Value = fieldName };
                 if (field.AllowedValues.Count > 0)
                 {
-                    row.Cells[2] = new DataGridViewComboBoxCell();
-                    var cell = (DataGridViewComboBoxCell)row.Cells[2];
+                    row.Cells[1] = new DataGridViewComboBoxCell();
+                    var cell = (DataGridViewComboBoxCell)row.Cells[1];
                     cell.DataSource = field.AllowedValues;
                 }
                 else
                 {
-                    row.Cells[2] = new DataGridViewTextBoxCell();
+                    row.Cells[1] = new DataGridViewTextBoxCell();
                 }
-                row.Cells[2].Value = field.DefaultValue;
+                row.Cells[1].Value = field.DefaultValue;
                 tfsFieldGrid.Rows.Add(row);
             }
         }
@@ -167,8 +162,8 @@ namespace JiraToTfs.View
         {
             foreach (DataGridViewRow row in tfsFieldGrid.Rows)
             {
-                string name = row.Cells[1].EditedFormattedValue.ToString(),
-                       value = (row.Cells[2].EditedFormattedValue != null ? row.Cells[2].EditedFormattedValue.ToString() : "");
+                string name = row.Cells[0].EditedFormattedValue.ToString(),
+                       value = (row.Cells[1].EditedFormattedValue != null ? row.Cells[1].EditedFormattedValue.ToString() : "");
                 fields[name].DefaultValue = value;
             }
         }

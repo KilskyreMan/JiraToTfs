@@ -6,12 +6,12 @@ using log4net.Config;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 
-[assembly: AssemblyTitle("Jira to Sage TFS (ian.montgomery@sage.com)")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Jira To TFS")]
+[assembly: AssemblyDescription("Import tickets from Atlassian Jra to Microsoft's TFS")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Sage")]
+[assembly: AssemblyCompany("KilskyreMan")]
 [assembly: AssemblyProduct("JiraToTfs")]
-[assembly: AssemblyCopyright("Copyright © Sage 2014")]
+[assembly: AssemblyCopyright("GNU General Public License v3.0")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

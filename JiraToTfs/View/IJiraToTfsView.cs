@@ -28,5 +28,6 @@ namespace JiraToTfs.View
         void ShowAdvancedSettings(AdvancedSettings advancedSettings);
         void WaitStart();
         void WaitEnd();
+        void TfsDependenciesMissing();
     }
 }
