@@ -229,6 +229,10 @@ namespace JiraToTfs.Presenter
                     view.WarnAboutImpersonation = (selectedProject.Users.CanImpersonate == false);
                     validateSettings();
                 }
+                if (selectedProject == null || string.IsNullOrEmpty(selectedProject.Project))
+                {
+                    view.WarnAboutImpersonation = false;
+                }
             }
             else
             {

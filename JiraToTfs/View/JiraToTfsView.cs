@@ -273,7 +273,7 @@ namespace JiraToTfs.View
 
         private void impersonationLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Process.Start("https://github.com/KilskyreMan/JiraToTfs/wiki#turn-on-impersonation");
+            Process.Start("https://github.com/KilskyreMan/JiraToTfs/wiki#impersonation");
         }
 
         private void OnClickTellMeMore(object sender, LinkLabelLinkClickedEventArgs e)
