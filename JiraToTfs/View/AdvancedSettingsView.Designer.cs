@@ -79,7 +79,6 @@
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.customPriorityNote = new System.Windows.Forms.Label();
-            this.Required = new System.Windows.Forms.DataGridViewImageColumn();
             this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tfsFieldValueColumn = new System.Windows.Forms.DataGridViewComboBoxColumn();
             this.tabControl.SuspendLayout();
@@ -97,9 +96,10 @@
             // 
             // CancelBtn
             // 
-            this.CancelBtn.Location = new System.Drawing.Point(469, 612);
+            this.CancelBtn.Location = new System.Drawing.Point(625, 753);
+            this.CancelBtn.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.CancelBtn.Name = "CancelBtn";
-            this.CancelBtn.Size = new System.Drawing.Size(75, 23);
+            this.CancelBtn.Size = new System.Drawing.Size(100, 28);
             this.CancelBtn.TabIndex = 0;
             this.CancelBtn.Text = "&Cancel";
             this.CancelBtn.UseVisualStyleBackColor = true;
@@ -107,9 +107,10 @@
             // 
             // SaveBtn
             // 
-            this.SaveBtn.Location = new System.Drawing.Point(388, 612);
+            this.SaveBtn.Location = new System.Drawing.Point(517, 753);
+            this.SaveBtn.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.SaveBtn.Name = "SaveBtn";
-            this.SaveBtn.Size = new System.Drawing.Size(75, 23);
+            this.SaveBtn.Size = new System.Drawing.Size(100, 28);
             this.SaveBtn.TabIndex = 1;
             this.SaveBtn.Text = "&Save";
             this.SaveBtn.UseVisualStyleBackColor = true;
@@ -122,10 +123,11 @@
             this.tabControl.Controls.Add(this.tfsUserTab);
             this.tabControl.Controls.Add(this.workItemTab);
             this.tabControl.Controls.Add(this.tfsBugTab);
-            this.tabControl.Location = new System.Drawing.Point(15, 13);
+            this.tabControl.Location = new System.Drawing.Point(20, 16);
+            this.tabControl.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(529, 593);
+            this.tabControl.Size = new System.Drawing.Size(705, 730);
             this.tabControl.TabIndex = 2;
             // 
             // typeTab
@@ -135,10 +137,11 @@
             this.typeTab.Controls.Add(this.noJiraTicketTypes);
             this.typeTab.Controls.Add(this.restoreDefaultTypesBtn);
             this.typeTab.Controls.Add(this.jiraGrid);
-            this.typeTab.Location = new System.Drawing.Point(4, 22);
+            this.typeTab.Location = new System.Drawing.Point(4, 25);
+            this.typeTab.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.typeTab.Name = "typeTab";
-            this.typeTab.Padding = new System.Windows.Forms.Padding(3);
-            this.typeTab.Size = new System.Drawing.Size(521, 567);
+            this.typeTab.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.typeTab.Size = new System.Drawing.Size(697, 701);
             this.typeTab.TabIndex = 0;
             this.typeTab.Text = "Work Item Type";
             // 
@@ -146,9 +149,10 @@
             // 
             this.pleaseCheckJira.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.pleaseCheckJira.ForeColor = System.Drawing.Color.Red;
-            this.pleaseCheckJira.Location = new System.Drawing.Point(119, 185);
+            this.pleaseCheckJira.Location = new System.Drawing.Point(159, 228);
+            this.pleaseCheckJira.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.pleaseCheckJira.Name = "pleaseCheckJira";
-            this.pleaseCheckJira.Size = new System.Drawing.Size(283, 40);
+            this.pleaseCheckJira.Size = new System.Drawing.Size(377, 49);
             this.pleaseCheckJira.TabIndex = 21;
             this.pleaseCheckJira.Text = "Close this dialog and ensure you have specified connection and login details for " +
     "both Jira and TFS.";
@@ -158,18 +162,20 @@
             // 
             this.noJiraTicketTypes.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.noJiraTicketTypes.ForeColor = System.Drawing.Color.Red;
-            this.noJiraTicketTypes.Location = new System.Drawing.Point(119, 162);
+            this.noJiraTicketTypes.Location = new System.Drawing.Point(159, 199);
+            this.noJiraTicketTypes.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.noJiraTicketTypes.Name = "noJiraTicketTypes";
-            this.noJiraTicketTypes.Size = new System.Drawing.Size(283, 19);
+            this.noJiraTicketTypes.Size = new System.Drawing.Size(377, 23);
             this.noJiraTicketTypes.TabIndex = 20;
             this.noJiraTicketTypes.Text = "Unable to map Work Item Types.";
             this.noJiraTicketTypes.Visible = false;
             // 
             // restoreDefaultTypesBtn
             // 
-            this.restoreDefaultTypesBtn.Location = new System.Drawing.Point(3, 535);
+            this.restoreDefaultTypesBtn.Location = new System.Drawing.Point(4, 658);
+            this.restoreDefaultTypesBtn.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.restoreDefaultTypesBtn.Name = "restoreDefaultTypesBtn";
-            this.restoreDefaultTypesBtn.Size = new System.Drawing.Size(97, 23);
+            this.restoreDefaultTypesBtn.Size = new System.Drawing.Size(129, 28);
             this.restoreDefaultTypesBtn.TabIndex = 19;
             this.restoreDefaultTypesBtn.Text = "&Restore defaults";
             this.restoreDefaultTypesBtn.UseVisualStyleBackColor = true;
@@ -196,13 +202,14 @@
             this.jiraGrid.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.jiraColumn,
             this.maptoColumn});
-            this.jiraGrid.Location = new System.Drawing.Point(0, 17);
+            this.jiraGrid.Location = new System.Drawing.Point(0, 21);
+            this.jiraGrid.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.jiraGrid.Name = "jiraGrid";
             this.jiraGrid.RowHeadersVisible = false;
             this.jiraGrid.ShowCellErrors = false;
             this.jiraGrid.ShowEditingIcon = false;
             this.jiraGrid.ShowRowErrors = false;
-            this.jiraGrid.Size = new System.Drawing.Size(518, 508);
+            this.jiraGrid.Size = new System.Drawing.Size(691, 625);
             this.jiraGrid.TabIndex = 18;
             // 
             // jiraColumn
@@ -231,10 +238,11 @@
             this.fieldTab.Controls.Add(this.checkFieldSettings);
             this.fieldTab.Controls.Add(this.noFieldsFound);
             this.fieldTab.Controls.Add(this.tfsFieldGrid);
-            this.fieldTab.Location = new System.Drawing.Point(4, 22);
+            this.fieldTab.Location = new System.Drawing.Point(4, 25);
+            this.fieldTab.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.fieldTab.Name = "fieldTab";
-            this.fieldTab.Padding = new System.Windows.Forms.Padding(3);
-            this.fieldTab.Size = new System.Drawing.Size(521, 567);
+            this.fieldTab.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.fieldTab.Size = new System.Drawing.Size(697, 701);
             this.fieldTab.TabIndex = 1;
             this.fieldTab.Text = "Default Field Values";
             // 
@@ -242,9 +250,10 @@
             // 
             this.checkFieldSettings.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.checkFieldSettings.ForeColor = System.Drawing.Color.Red;
-            this.checkFieldSettings.Location = new System.Drawing.Point(119, 185);
+            this.checkFieldSettings.Location = new System.Drawing.Point(159, 228);
+            this.checkFieldSettings.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.checkFieldSettings.Name = "checkFieldSettings";
-            this.checkFieldSettings.Size = new System.Drawing.Size(283, 40);
+            this.checkFieldSettings.Size = new System.Drawing.Size(377, 49);
             this.checkFieldSettings.TabIndex = 23;
             this.checkFieldSettings.Text = "Close this dialog and ensure you have connected to the right TFS server.";
             this.checkFieldSettings.Visible = false;
@@ -253,9 +262,10 @@
             // 
             this.noFieldsFound.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.noFieldsFound.ForeColor = System.Drawing.Color.Red;
-            this.noFieldsFound.Location = new System.Drawing.Point(119, 162);
+            this.noFieldsFound.Location = new System.Drawing.Point(159, 199);
+            this.noFieldsFound.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.noFieldsFound.Name = "noFieldsFound";
-            this.noFieldsFound.Size = new System.Drawing.Size(283, 19);
+            this.noFieldsFound.Size = new System.Drawing.Size(377, 23);
             this.noFieldsFound.TabIndex = 22;
             this.noFieldsFound.Text = "Unable to connect to TFS.";
             this.noFieldsFound.Visible = false;
@@ -279,16 +289,16 @@
             this.tfsFieldGrid.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
             this.tfsFieldGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.tfsFieldGrid.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.Required,
             this.dataGridViewTextBoxColumn1,
             this.tfsFieldValueColumn});
-            this.tfsFieldGrid.Location = new System.Drawing.Point(0, 17);
+            this.tfsFieldGrid.Location = new System.Drawing.Point(0, 21);
+            this.tfsFieldGrid.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.tfsFieldGrid.Name = "tfsFieldGrid";
             this.tfsFieldGrid.RowHeadersVisible = false;
             this.tfsFieldGrid.ShowCellErrors = false;
             this.tfsFieldGrid.ShowEditingIcon = false;
             this.tfsFieldGrid.ShowRowErrors = false;
-            this.tfsFieldGrid.Size = new System.Drawing.Size(518, 550);
+            this.tfsFieldGrid.Size = new System.Drawing.Size(691, 677);
             this.tfsFieldGrid.TabIndex = 19;
             // 
             // tfsUserTab
@@ -302,10 +312,11 @@
             this.tfsUserTab.Controls.Add(this.defaultAsigneeLabel);
             this.tfsUserTab.Controls.Add(this.checkUserSettings);
             this.tfsUserTab.Controls.Add(this.noUsersFound);
-            this.tfsUserTab.Location = new System.Drawing.Point(4, 22);
+            this.tfsUserTab.Location = new System.Drawing.Point(4, 25);
+            this.tfsUserTab.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.tfsUserTab.Name = "tfsUserTab";
-            this.tfsUserTab.Padding = new System.Windows.Forms.Padding(3);
-            this.tfsUserTab.Size = new System.Drawing.Size(521, 567);
+            this.tfsUserTab.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tfsUserTab.Size = new System.Drawing.Size(697, 701);
             this.tfsUserTab.TabIndex = 2;
             this.tfsUserTab.Text = "Default User";
             // 
@@ -313,45 +324,50 @@
             // 
             this.defaultUserLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.defaultUserLabel.ForeColor = System.Drawing.Color.Black;
-            this.defaultUserLabel.Location = new System.Drawing.Point(79, 153);
+            this.defaultUserLabel.Location = new System.Drawing.Point(105, 188);
+            this.defaultUserLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.defaultUserLabel.Name = "defaultUserLabel";
-            this.defaultUserLabel.Size = new System.Drawing.Size(283, 16);
+            this.defaultUserLabel.Size = new System.Drawing.Size(377, 20);
             this.defaultUserLabel.TabIndex = 32;
             this.defaultUserLabel.Text = "Default TFS User";
             // 
             // defaultCreatorList
             // 
             this.defaultCreatorList.FormattingEnabled = true;
-            this.defaultCreatorList.Location = new System.Drawing.Point(79, 117);
+            this.defaultCreatorList.Location = new System.Drawing.Point(105, 144);
+            this.defaultCreatorList.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.defaultCreatorList.Name = "defaultCreatorList";
-            this.defaultCreatorList.Size = new System.Drawing.Size(268, 21);
+            this.defaultCreatorList.Size = new System.Drawing.Size(356, 24);
             this.defaultCreatorList.TabIndex = 31;
             // 
             // defaultCreatorLabel
             // 
             this.defaultCreatorLabel.AutoSize = true;
             this.defaultCreatorLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.defaultCreatorLabel.Location = new System.Drawing.Point(79, 96);
+            this.defaultCreatorLabel.Location = new System.Drawing.Point(105, 118);
+            this.defaultCreatorLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.defaultCreatorLabel.Name = "defaultCreatorLabel";
-            this.defaultCreatorLabel.Size = new System.Drawing.Size(97, 13);
+            this.defaultCreatorLabel.Size = new System.Drawing.Size(124, 17);
             this.defaultCreatorLabel.TabIndex = 30;
             this.defaultCreatorLabel.Text = "Default Creator:";
             // 
             // defaultAssigneeList
             // 
             this.defaultAssigneeList.FormattingEnabled = true;
-            this.defaultAssigneeList.Location = new System.Drawing.Point(79, 67);
+            this.defaultAssigneeList.Location = new System.Drawing.Point(105, 82);
+            this.defaultAssigneeList.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.defaultAssigneeList.Name = "defaultAssigneeList";
-            this.defaultAssigneeList.Size = new System.Drawing.Size(268, 21);
+            this.defaultAssigneeList.Size = new System.Drawing.Size(356, 24);
             this.defaultAssigneeList.TabIndex = 29;
             // 
             // detailedNoteOnDefaultUser
             // 
             this.detailedNoteOnDefaultUser.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.detailedNoteOnDefaultUser.ForeColor = System.Drawing.Color.Black;
-            this.detailedNoteOnDefaultUser.Location = new System.Drawing.Point(79, 176);
+            this.detailedNoteOnDefaultUser.Location = new System.Drawing.Point(105, 217);
+            this.detailedNoteOnDefaultUser.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.detailedNoteOnDefaultUser.Name = "detailedNoteOnDefaultUser";
-            this.detailedNoteOnDefaultUser.Size = new System.Drawing.Size(283, 40);
+            this.detailedNoteOnDefaultUser.Size = new System.Drawing.Size(377, 49);
             this.detailedNoteOnDefaultUser.TabIndex = 28;
             this.detailedNoteOnDefaultUser.Text = "The Default Assignee / Creator will be used when unable to find in TFS, the Jira " +
     "user who created or is assigned to a ticket being imported.";
@@ -360,9 +376,10 @@
             // 
             this.defaultAsigneeLabel.AutoSize = true;
             this.defaultAsigneeLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.defaultAsigneeLabel.Location = new System.Drawing.Point(79, 46);
+            this.defaultAsigneeLabel.Location = new System.Drawing.Point(105, 57);
+            this.defaultAsigneeLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.defaultAsigneeLabel.Name = "defaultAsigneeLabel";
-            this.defaultAsigneeLabel.Size = new System.Drawing.Size(107, 13);
+            this.defaultAsigneeLabel.Size = new System.Drawing.Size(136, 17);
             this.defaultAsigneeLabel.TabIndex = 27;
             this.defaultAsigneeLabel.Text = "Default Assignee:";
             // 
@@ -370,9 +387,10 @@
             // 
             this.checkUserSettings.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.checkUserSettings.ForeColor = System.Drawing.Color.Red;
-            this.checkUserSettings.Location = new System.Drawing.Point(79, 176);
+            this.checkUserSettings.Location = new System.Drawing.Point(105, 217);
+            this.checkUserSettings.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.checkUserSettings.Name = "checkUserSettings";
-            this.checkUserSettings.Size = new System.Drawing.Size(283, 40);
+            this.checkUserSettings.Size = new System.Drawing.Size(377, 49);
             this.checkUserSettings.TabIndex = 26;
             this.checkUserSettings.Text = "Close this dialog and ensure you have connected to the right TFS server.";
             this.checkUserSettings.Visible = false;
@@ -381,9 +399,10 @@
             // 
             this.noUsersFound.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.noUsersFound.ForeColor = System.Drawing.Color.Red;
-            this.noUsersFound.Location = new System.Drawing.Point(79, 153);
+            this.noUsersFound.Location = new System.Drawing.Point(105, 188);
+            this.noUsersFound.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.noUsersFound.Name = "noUsersFound";
-            this.noUsersFound.Size = new System.Drawing.Size(283, 19);
+            this.noUsersFound.Size = new System.Drawing.Size(377, 23);
             this.noUsersFound.TabIndex = 25;
             this.noUsersFound.Text = "Unable to connect to TFS.";
             this.noUsersFound.Visible = false;
@@ -396,19 +415,21 @@
             this.workItemTab.Controls.Add(this.label1);
             this.workItemTab.Controls.Add(this.restoreStateDefaults);
             this.workItemTab.Controls.Add(this.workItemGrid);
-            this.workItemTab.Location = new System.Drawing.Point(4, 22);
+            this.workItemTab.Location = new System.Drawing.Point(4, 25);
+            this.workItemTab.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.workItemTab.Name = "workItemTab";
-            this.workItemTab.Padding = new System.Windows.Forms.Padding(3);
-            this.workItemTab.Size = new System.Drawing.Size(521, 567);
+            this.workItemTab.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.workItemTab.Size = new System.Drawing.Size(697, 701);
             this.workItemTab.TabIndex = 3;
             this.workItemTab.Text = "New Work Items";
             // 
             // seeMicrosoftLink
             // 
             this.seeMicrosoftLink.AutoSize = true;
-            this.seeMicrosoftLink.Location = new System.Drawing.Point(2, 66);
+            this.seeMicrosoftLink.Location = new System.Drawing.Point(3, 81);
+            this.seeMicrosoftLink.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.seeMicrosoftLink.Name = "seeMicrosoftLink";
-            this.seeMicrosoftLink.Size = new System.Drawing.Size(126, 13);
+            this.seeMicrosoftLink.Size = new System.Drawing.Size(164, 17);
             this.seeMicrosoftLink.TabIndex = 24;
             this.seeMicrosoftLink.TabStop = true;
             this.seeMicrosoftLink.Text = "See Microsoft Work-Flow";
@@ -416,27 +437,30 @@
             // 
             // label2
             // 
-            this.label2.Location = new System.Drawing.Point(2, 33);
+            this.label2.Location = new System.Drawing.Point(3, 41);
+            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(432, 30);
+            this.label2.Size = new System.Drawing.Size(576, 37);
             this.label2.TabIndex = 23;
             this.label2.Text = "This can be useful where the assumption is that everything logged in Jira has bee" +
     "n approved by a Product Owner and are regarded as no longer \'new\' in TFS.";
             // 
             // label1
             // 
-            this.label1.Location = new System.Drawing.Point(2, 14);
+            this.label1.Location = new System.Drawing.Point(3, 17);
+            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(432, 22);
+            this.label1.Size = new System.Drawing.Size(576, 27);
             this.label1.TabIndex = 22;
             this.label1.Text = "Jira tickets marked as \'To-do\' can be set to their next \'state\' when imported int" +
     "o TFS.";
             // 
             // restoreStateDefaults
             // 
-            this.restoreStateDefaults.Location = new System.Drawing.Point(3, 535);
+            this.restoreStateDefaults.Location = new System.Drawing.Point(4, 658);
+            this.restoreStateDefaults.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.restoreStateDefaults.Name = "restoreStateDefaults";
-            this.restoreStateDefaults.Size = new System.Drawing.Size(97, 23);
+            this.restoreStateDefaults.Size = new System.Drawing.Size(129, 28);
             this.restoreStateDefaults.TabIndex = 21;
             this.restoreStateDefaults.Text = "&Restore defaults";
             this.restoreStateDefaults.UseVisualStyleBackColor = true;
@@ -463,13 +487,14 @@
             this.workItemGrid.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.workItem,
             this.initialState});
-            this.workItemGrid.Location = new System.Drawing.Point(2, 94);
+            this.workItemGrid.Location = new System.Drawing.Point(3, 116);
+            this.workItemGrid.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.workItemGrid.Name = "workItemGrid";
             this.workItemGrid.RowHeadersVisible = false;
             this.workItemGrid.ShowCellErrors = false;
             this.workItemGrid.ShowEditingIcon = false;
             this.workItemGrid.ShowRowErrors = false;
-            this.workItemGrid.Size = new System.Drawing.Size(518, 418);
+            this.workItemGrid.Size = new System.Drawing.Size(691, 514);
             this.workItemGrid.TabIndex = 20;
             this.workItemGrid.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.OnDataError);
             // 
@@ -497,10 +522,11 @@
             // 
             this.tfsBugTab.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.tfsBugTab.Controls.Add(this.priorityPanel);
-            this.tfsBugTab.Location = new System.Drawing.Point(4, 22);
+            this.tfsBugTab.Location = new System.Drawing.Point(4, 25);
+            this.tfsBugTab.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.tfsBugTab.Name = "tfsBugTab";
-            this.tfsBugTab.Padding = new System.Windows.Forms.Padding(3);
-            this.tfsBugTab.Size = new System.Drawing.Size(521, 567);
+            this.tfsBugTab.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tfsBugTab.Size = new System.Drawing.Size(697, 701);
             this.tfsBugTab.TabIndex = 4;
             this.tfsBugTab.Text = "Bug Priorities";
             // 
@@ -513,16 +539,18 @@
             this.priorityPanel.Controls.Add(this.label4);
             this.priorityPanel.Controls.Add(this.label3);
             this.priorityPanel.Controls.Add(this.customPriorityNote);
-            this.priorityPanel.Location = new System.Drawing.Point(7, 9);
+            this.priorityPanel.Location = new System.Drawing.Point(9, 11);
+            this.priorityPanel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.priorityPanel.Name = "priorityPanel";
-            this.priorityPanel.Size = new System.Drawing.Size(511, 558);
+            this.priorityPanel.Size = new System.Drawing.Size(681, 687);
             this.priorityPanel.TabIndex = 0;
             // 
             // restorePriorityDefaults
             // 
-            this.restorePriorityDefaults.Location = new System.Drawing.Point(313, 268);
+            this.restorePriorityDefaults.Location = new System.Drawing.Point(417, 330);
+            this.restorePriorityDefaults.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.restorePriorityDefaults.Name = "restorePriorityDefaults";
-            this.restorePriorityDefaults.Size = new System.Drawing.Size(97, 23);
+            this.restorePriorityDefaults.Size = new System.Drawing.Size(129, 28);
             this.restorePriorityDefaults.TabIndex = 27;
             this.restorePriorityDefaults.Text = "&Restore defaults";
             this.restorePriorityDefaults.UseVisualStyleBackColor = true;
@@ -550,7 +578,8 @@
             this.priorityColumn,
             this.toPriorityListColumn,
             this.toPriorityColumn});
-            this.priorityGrid.Location = new System.Drawing.Point(173, 123);
+            this.priorityGrid.Location = new System.Drawing.Point(231, 151);
+            this.priorityGrid.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.priorityGrid.MultiSelect = false;
             this.priorityGrid.Name = "priorityGrid";
             this.priorityGrid.RowHeadersVisible = false;
@@ -558,7 +587,7 @@
             this.priorityGrid.ShowCellErrors = false;
             this.priorityGrid.ShowEditingIcon = false;
             this.priorityGrid.ShowRowErrors = false;
-            this.priorityGrid.Size = new System.Drawing.Size(237, 137);
+            this.priorityGrid.Size = new System.Drawing.Size(316, 169);
             this.priorityGrid.TabIndex = 26;
             this.priorityGrid.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.OnDataError);
             // 
@@ -573,7 +602,7 @@
             this.priorityColumn.Name = "priorityColumn";
             this.priorityColumn.ReadOnly = true;
             this.priorityColumn.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.priorityColumn.Width = 63;
+            this.priorityColumn.Width = 81;
             // 
             // toPriorityListColumn
             // 
@@ -595,9 +624,10 @@
             // 
             this.customPriorityField.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.customPriorityField.FormattingEnabled = true;
-            this.customPriorityField.Location = new System.Drawing.Point(173, 85);
+            this.customPriorityField.Location = new System.Drawing.Point(231, 105);
+            this.customPriorityField.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.customPriorityField.Name = "customPriorityField";
-            this.customPriorityField.Size = new System.Drawing.Size(237, 21);
+            this.customPriorityField.Size = new System.Drawing.Size(315, 24);
             this.customPriorityField.Sorted = true;
             this.customPriorityField.TabIndex = 25;
             this.customPriorityField.SelectedIndexChanged += new System.EventHandler(this.customPriorityField_SelectedIndexChanged);
@@ -605,37 +635,31 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(81, 87);
+            this.label4.Location = new System.Drawing.Point(108, 107);
+            this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(63, 13);
+            this.label4.Size = new System.Drawing.Size(86, 17);
             this.label4.TabIndex = 24;
             this.label4.Text = "Priority Field";
             // 
             // label3
             // 
-            this.label3.Location = new System.Drawing.Point(80, 41);
+            this.label3.Location = new System.Drawing.Point(107, 50);
+            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(350, 31);
+            this.label3.Size = new System.Drawing.Size(467, 38);
             this.label3.TabIndex = 23;
             this.label3.Text = "Instead of using Microsoft\'s standard Priority Field, you can choose a custom fie" +
     "ld in which to hold bug prioritisation.";
             // 
             // customPriorityNote
             // 
-            this.customPriorityNote.Location = new System.Drawing.Point(80, 21);
+            this.customPriorityNote.Location = new System.Drawing.Point(107, 26);
+            this.customPriorityNote.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.customPriorityNote.Name = "customPriorityNote";
-            this.customPriorityNote.Size = new System.Drawing.Size(350, 19);
+            this.customPriorityNote.Size = new System.Drawing.Size(467, 23);
             this.customPriorityNote.TabIndex = 22;
             this.customPriorityNote.Text = "Some organisations define their own unique prioritisation listing for bugs.";
-            // 
-            // Required
-            // 
-            this.Required.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
-            this.Required.HeaderText = "Required";
-            this.Required.Name = "Required";
-            this.Required.ReadOnly = true;
-            this.Required.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            this.Required.Width = 75;
             // 
             // dataGridViewTextBoxColumn1
             // 
@@ -648,7 +672,7 @@
             this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
             this.dataGridViewTextBoxColumn1.ReadOnly = true;
             this.dataGridViewTextBoxColumn1.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridViewTextBoxColumn1.Width = 77;
+            this.dataGridViewTextBoxColumn1.Width = 97;
             // 
             // tfsFieldValueColumn
             // 
@@ -660,15 +684,16 @@
             // 
             // AdvancedSettingsView
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
-            this.ClientSize = new System.Drawing.Size(554, 643);
+            this.ClientSize = new System.Drawing.Size(739, 791);
             this.Controls.Add(this.SaveBtn);
             this.Controls.Add(this.CancelBtn);
             this.Controls.Add(this.tabControl);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "AdvancedSettingsView";
@@ -739,7 +764,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn toPriorityColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn jiraColumn;
         private System.Windows.Forms.DataGridViewComboBoxColumn maptoColumn;
-        private System.Windows.Forms.DataGridViewImageColumn Required;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
         private System.Windows.Forms.DataGridViewComboBoxColumn tfsFieldValueColumn;
     }

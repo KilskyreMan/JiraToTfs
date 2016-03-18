@@ -437,7 +437,7 @@
             this.MinimizeBox = false;
             this.Name = "JiraToTfsView";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Jira to Tfs";
+            this.Text = "Jira to TFS";
             this.Shown += new System.EventHandler(this.JiraToTfsView_Shown);
             this.impersonationPanel.ResumeLayout(false);
             this.impersonationPanel.PerformLayout();
