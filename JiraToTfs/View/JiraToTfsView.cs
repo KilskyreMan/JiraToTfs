@@ -200,6 +200,11 @@ namespace JiraToTfs.View
             set { impersonationPanel.Visible = value; }
         }
 
+        public bool WarnAboutNoUsers
+        {
+            set { noUsersPanel.Visible = value; }
+        }
+
         public void ShowFailedTickets(List<IFailedTicket> failedTickets)
         {
             var view = new TicektsNotImportedView(failedTickets);
@@ -279,6 +284,11 @@ namespace JiraToTfs.View
         private void OnClickTellMeMore(object sender, LinkLabelLinkClickedEventArgs e)
         {
             Process.Start("https://github.com/KilskyreMan/JiraToTfs/wiki");
+        }
+
+        private void noUsersAssignedLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Process.Start("https://github.com/KilskyreMan/JiraToTfs/wiki#no-users-assigned-to-selected-tfs-project");
         }
     }
 }

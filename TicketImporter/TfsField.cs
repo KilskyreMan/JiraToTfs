@@ -71,31 +71,33 @@ namespace TicketImporter
         public object ToFieldValue(object value)
         {
             object typedValue = value;
-
-            switch (fd.FieldType)
+            if (value != null)
             {
-                case FieldType.Boolean:
-                    bool typedBool;
-                    bool.TryParse(DefaultValue, out typedBool);
-                    typedValue = typedBool;
-                    break;
-                case FieldType.DateTime:
-                    DateTime typedDateTime;
-                    DateTime.TryParse(DefaultValue, out typedDateTime);
-                    typedValue = typedDateTime;
-                    break;
-                case FieldType.Double:
-                    Double typedDouble;
-                    Double.TryParse(DefaultValue, out typedDouble);
-                    typedValue = typedDouble;
-                    break;
-                case FieldType.Integer:
-                    int typedInt;
-                    int.TryParse(DefaultValue, out typedInt);
-                    typedValue = typedInt;
-                    break;
+                string stringValue = value.ToString();
+                switch (fd.FieldType)
+                {
+                    case FieldType.Boolean:
+                        bool typedBool;
+                        bool.TryParse(stringValue, out typedBool);
+                        typedValue = typedBool;
+                        break;
+                    case FieldType.DateTime:
+                        DateTime typedDateTime;
+                        DateTime.TryParse(stringValue, out typedDateTime);
+                        typedValue = typedDateTime;
+                        break;
+                    case FieldType.Double:
+                        Double typedDouble;
+                        Double.TryParse(stringValue, out typedDouble);
+                        typedValue = typedDouble;
+                        break;
+                    case FieldType.Integer:
+                        int typedInt;
+                        int.TryParse(stringValue, out typedInt);
+                        typedValue = typedInt;
+                        break;
+                }
             }
-
             return typedValue;
         }
 

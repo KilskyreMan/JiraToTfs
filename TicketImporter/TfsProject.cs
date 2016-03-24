@@ -246,10 +246,13 @@ namespace TicketImporter
 
         private void assignToField(WorkItem workItem, string fieldName, object value)
         {
-            TfsField field = fields[fieldName];
-            if (field != null && workItem.Fields.Contains(fieldName))
+            if (value != null && string.IsNullOrEmpty(value.ToString()) == false)
             {
-                workItem.Fields[fieldName].Value = field.ToFieldValue(value);
+                TfsField field = fields[fieldName];
+                if (field != null && workItem.Fields.Contains(fieldName))
+                {
+                    workItem.Fields[fieldName].Value = field.ToFieldValue(value);
+                }
             }
         }
 
@@ -464,6 +467,7 @@ namespace TicketImporter
                     }
                     catch (FileAttachmentException attachmentException)
                     {
+
                         var rejectedFile = attachmentException.SourceAttachment.Name;
                         rejectedAttachments.Add(string.Format("{0} ({1})", rejectedFile, attachmentException.Message));
 

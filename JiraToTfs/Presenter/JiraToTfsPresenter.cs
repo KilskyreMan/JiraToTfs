@@ -217,6 +217,9 @@ namespace JiraToTfs.Presenter
         private void tfsConnect_Done(object sender, RunWorkerCompletedEventArgs e)
         {
             view.WaitEnd();
+            view.WarnAboutImpersonation = false;
+            view.WarnAboutNoUsers = false;
+
             if (e.Result == null)
             {
                 if (selectedProject != null)
@@ -226,12 +229,18 @@ namespace JiraToTfs.Presenter
                     view.AreaPaths = selectedProject.AreaPaths;
                     view.SelectedTfsTeam = Settings.Default.TfsTeam;
                     view.SelectedAreaPath = Settings.Default.TfsAreaPath;
-                    view.WarnAboutImpersonation = (selectedProject.Users.CanImpersonate == false);
+                    if (!selectedProject.Users.CanImpersonate)
+                    {
+                        if (selectedProject.Users.Count > 1)
+                        {
+                            view.WarnAboutImpersonation = true;
+                        }
+                        else
+                        {
+                            view.WarnAboutNoUsers = true;
+                        }
+                    }
                     validateSettings();
-                }
-                if (selectedProject == null || string.IsNullOrEmpty(selectedProject.Project))
-                {
-                    view.WarnAboutImpersonation = false;
                 }
             }
             else

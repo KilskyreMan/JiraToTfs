@@ -42,6 +42,7 @@ namespace JiraToTfs.View
         void WarnUser(string problem);
         void InformUser(string info);
         bool WarnAboutImpersonation { set; }
+        bool WarnAboutNoUsers { set; }
         void InformUserOfDetailedProgress(string info);
         void ShowFailedTickets(List<IFailedTicket> failedTickets);
         void ImportStarted();

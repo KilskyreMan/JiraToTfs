@@ -31,11 +31,11 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AdvancedSettingsView));
             this.CancelBtn = new System.Windows.Forms.Button();
             this.SaveBtn = new System.Windows.Forms.Button();
@@ -51,6 +51,8 @@
             this.checkFieldSettings = new System.Windows.Forms.Label();
             this.noFieldsFound = new System.Windows.Forms.Label();
             this.tfsFieldGrid = new System.Windows.Forms.DataGridView();
+            this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.tfsFieldValueColumn = new System.Windows.Forms.DataGridViewComboBoxColumn();
             this.tfsUserTab = new System.Windows.Forms.TabPage();
             this.defaultUserLabel = new System.Windows.Forms.Label();
             this.defaultCreatorList = new System.Windows.Forms.ComboBox();
@@ -79,8 +81,7 @@
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.customPriorityNote = new System.Windows.Forms.Label();
-            this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.tfsFieldValueColumn = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.TellMeMore = new System.Windows.Forms.LinkLabel();
             this.tabControl.SuspendLayout();
             this.typeTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.jiraGrid)).BeginInit();
@@ -97,7 +98,7 @@
             // CancelBtn
             // 
             this.CancelBtn.Location = new System.Drawing.Point(625, 753);
-            this.CancelBtn.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.CancelBtn.Margin = new System.Windows.Forms.Padding(4);
             this.CancelBtn.Name = "CancelBtn";
             this.CancelBtn.Size = new System.Drawing.Size(100, 28);
             this.CancelBtn.TabIndex = 0;
@@ -108,7 +109,7 @@
             // SaveBtn
             // 
             this.SaveBtn.Location = new System.Drawing.Point(517, 753);
-            this.SaveBtn.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.SaveBtn.Margin = new System.Windows.Forms.Padding(4);
             this.SaveBtn.Name = "SaveBtn";
             this.SaveBtn.Size = new System.Drawing.Size(100, 28);
             this.SaveBtn.TabIndex = 1;
@@ -124,7 +125,7 @@
             this.tabControl.Controls.Add(this.workItemTab);
             this.tabControl.Controls.Add(this.tfsBugTab);
             this.tabControl.Location = new System.Drawing.Point(20, 16);
-            this.tabControl.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabControl.Margin = new System.Windows.Forms.Padding(4);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
             this.tabControl.Size = new System.Drawing.Size(705, 730);
@@ -138,9 +139,9 @@
             this.typeTab.Controls.Add(this.restoreDefaultTypesBtn);
             this.typeTab.Controls.Add(this.jiraGrid);
             this.typeTab.Location = new System.Drawing.Point(4, 25);
-            this.typeTab.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.typeTab.Margin = new System.Windows.Forms.Padding(4);
             this.typeTab.Name = "typeTab";
-            this.typeTab.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.typeTab.Padding = new System.Windows.Forms.Padding(4);
             this.typeTab.Size = new System.Drawing.Size(697, 701);
             this.typeTab.TabIndex = 0;
             this.typeTab.Text = "Work Item Type";
@@ -173,7 +174,7 @@
             // restoreDefaultTypesBtn
             // 
             this.restoreDefaultTypesBtn.Location = new System.Drawing.Point(4, 658);
-            this.restoreDefaultTypesBtn.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.restoreDefaultTypesBtn.Margin = new System.Windows.Forms.Padding(4);
             this.restoreDefaultTypesBtn.Name = "restoreDefaultTypesBtn";
             this.restoreDefaultTypesBtn.Size = new System.Drawing.Size(129, 28);
             this.restoreDefaultTypesBtn.TabIndex = 19;
@@ -203,7 +204,7 @@
             this.jiraColumn,
             this.maptoColumn});
             this.jiraGrid.Location = new System.Drawing.Point(0, 21);
-            this.jiraGrid.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.jiraGrid.Margin = new System.Windows.Forms.Padding(4);
             this.jiraGrid.Name = "jiraGrid";
             this.jiraGrid.RowHeadersVisible = false;
             this.jiraGrid.ShowCellErrors = false;
@@ -239,9 +240,9 @@
             this.fieldTab.Controls.Add(this.noFieldsFound);
             this.fieldTab.Controls.Add(this.tfsFieldGrid);
             this.fieldTab.Location = new System.Drawing.Point(4, 25);
-            this.fieldTab.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.fieldTab.Margin = new System.Windows.Forms.Padding(4);
             this.fieldTab.Name = "fieldTab";
-            this.fieldTab.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.fieldTab.Padding = new System.Windows.Forms.Padding(4);
             this.fieldTab.Size = new System.Drawing.Size(697, 701);
             this.fieldTab.TabIndex = 1;
             this.fieldTab.Text = "Default Field Values";
@@ -292,7 +293,7 @@
             this.dataGridViewTextBoxColumn1,
             this.tfsFieldValueColumn});
             this.tfsFieldGrid.Location = new System.Drawing.Point(0, 21);
-            this.tfsFieldGrid.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tfsFieldGrid.Margin = new System.Windows.Forms.Padding(4);
             this.tfsFieldGrid.Name = "tfsFieldGrid";
             this.tfsFieldGrid.RowHeadersVisible = false;
             this.tfsFieldGrid.ShowCellErrors = false;
@@ -300,6 +301,27 @@
             this.tfsFieldGrid.ShowRowErrors = false;
             this.tfsFieldGrid.Size = new System.Drawing.Size(691, 677);
             this.tfsFieldGrid.TabIndex = 19;
+            // 
+            // dataGridViewTextBoxColumn1
+            // 
+            this.dataGridViewTextBoxColumn1.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Info;
+            dataGridViewCellStyle4.ForeColor = System.Drawing.Color.Black;
+            this.dataGridViewTextBoxColumn1.DefaultCellStyle = dataGridViewCellStyle4;
+            this.dataGridViewTextBoxColumn1.FillWeight = 50F;
+            this.dataGridViewTextBoxColumn1.HeaderText = "TFS Field";
+            this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
+            this.dataGridViewTextBoxColumn1.ReadOnly = true;
+            this.dataGridViewTextBoxColumn1.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridViewTextBoxColumn1.Width = 97;
+            // 
+            // tfsFieldValueColumn
+            // 
+            this.tfsFieldValueColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.tfsFieldValueColumn.DisplayStyle = System.Windows.Forms.DataGridViewComboBoxDisplayStyle.ComboBox;
+            this.tfsFieldValueColumn.HeaderText = "Defaults to";
+            this.tfsFieldValueColumn.Name = "tfsFieldValueColumn";
+            this.tfsFieldValueColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
             // 
             // tfsUserTab
             // 
@@ -313,9 +335,9 @@
             this.tfsUserTab.Controls.Add(this.checkUserSettings);
             this.tfsUserTab.Controls.Add(this.noUsersFound);
             this.tfsUserTab.Location = new System.Drawing.Point(4, 25);
-            this.tfsUserTab.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tfsUserTab.Margin = new System.Windows.Forms.Padding(4);
             this.tfsUserTab.Name = "tfsUserTab";
-            this.tfsUserTab.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tfsUserTab.Padding = new System.Windows.Forms.Padding(4);
             this.tfsUserTab.Size = new System.Drawing.Size(697, 701);
             this.tfsUserTab.TabIndex = 2;
             this.tfsUserTab.Text = "Default User";
@@ -335,7 +357,7 @@
             // 
             this.defaultCreatorList.FormattingEnabled = true;
             this.defaultCreatorList.Location = new System.Drawing.Point(105, 144);
-            this.defaultCreatorList.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.defaultCreatorList.Margin = new System.Windows.Forms.Padding(4);
             this.defaultCreatorList.Name = "defaultCreatorList";
             this.defaultCreatorList.Size = new System.Drawing.Size(356, 24);
             this.defaultCreatorList.TabIndex = 31;
@@ -355,7 +377,7 @@
             // 
             this.defaultAssigneeList.FormattingEnabled = true;
             this.defaultAssigneeList.Location = new System.Drawing.Point(105, 82);
-            this.defaultAssigneeList.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.defaultAssigneeList.Margin = new System.Windows.Forms.Padding(4);
             this.defaultAssigneeList.Name = "defaultAssigneeList";
             this.defaultAssigneeList.Size = new System.Drawing.Size(356, 24);
             this.defaultAssigneeList.TabIndex = 29;
@@ -416,9 +438,9 @@
             this.workItemTab.Controls.Add(this.restoreStateDefaults);
             this.workItemTab.Controls.Add(this.workItemGrid);
             this.workItemTab.Location = new System.Drawing.Point(4, 25);
-            this.workItemTab.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.workItemTab.Margin = new System.Windows.Forms.Padding(4);
             this.workItemTab.Name = "workItemTab";
-            this.workItemTab.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.workItemTab.Padding = new System.Windows.Forms.Padding(4);
             this.workItemTab.Size = new System.Drawing.Size(697, 701);
             this.workItemTab.TabIndex = 3;
             this.workItemTab.Text = "New Work Items";
@@ -458,7 +480,7 @@
             // restoreStateDefaults
             // 
             this.restoreStateDefaults.Location = new System.Drawing.Point(4, 658);
-            this.restoreStateDefaults.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.restoreStateDefaults.Margin = new System.Windows.Forms.Padding(4);
             this.restoreStateDefaults.Name = "restoreStateDefaults";
             this.restoreStateDefaults.Size = new System.Drawing.Size(129, 28);
             this.restoreStateDefaults.TabIndex = 21;
@@ -488,7 +510,7 @@
             this.workItem,
             this.initialState});
             this.workItemGrid.Location = new System.Drawing.Point(3, 116);
-            this.workItemGrid.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.workItemGrid.Margin = new System.Windows.Forms.Padding(4);
             this.workItemGrid.Name = "workItemGrid";
             this.workItemGrid.RowHeadersVisible = false;
             this.workItemGrid.ShowCellErrors = false;
@@ -523,9 +545,9 @@
             this.tfsBugTab.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.tfsBugTab.Controls.Add(this.priorityPanel);
             this.tfsBugTab.Location = new System.Drawing.Point(4, 25);
-            this.tfsBugTab.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tfsBugTab.Margin = new System.Windows.Forms.Padding(4);
             this.tfsBugTab.Name = "tfsBugTab";
-            this.tfsBugTab.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tfsBugTab.Padding = new System.Windows.Forms.Padding(4);
             this.tfsBugTab.Size = new System.Drawing.Size(697, 701);
             this.tfsBugTab.TabIndex = 4;
             this.tfsBugTab.Text = "Bug Priorities";
@@ -540,7 +562,7 @@
             this.priorityPanel.Controls.Add(this.label3);
             this.priorityPanel.Controls.Add(this.customPriorityNote);
             this.priorityPanel.Location = new System.Drawing.Point(9, 11);
-            this.priorityPanel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.priorityPanel.Margin = new System.Windows.Forms.Padding(4);
             this.priorityPanel.Name = "priorityPanel";
             this.priorityPanel.Size = new System.Drawing.Size(681, 687);
             this.priorityPanel.TabIndex = 0;
@@ -548,7 +570,7 @@
             // restorePriorityDefaults
             // 
             this.restorePriorityDefaults.Location = new System.Drawing.Point(417, 330);
-            this.restorePriorityDefaults.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.restorePriorityDefaults.Margin = new System.Windows.Forms.Padding(4);
             this.restorePriorityDefaults.Name = "restorePriorityDefaults";
             this.restorePriorityDefaults.Size = new System.Drawing.Size(129, 28);
             this.restorePriorityDefaults.TabIndex = 27;
@@ -579,7 +601,7 @@
             this.toPriorityListColumn,
             this.toPriorityColumn});
             this.priorityGrid.Location = new System.Drawing.Point(231, 151);
-            this.priorityGrid.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.priorityGrid.Margin = new System.Windows.Forms.Padding(4);
             this.priorityGrid.MultiSelect = false;
             this.priorityGrid.Name = "priorityGrid";
             this.priorityGrid.RowHeadersVisible = false;
@@ -625,7 +647,7 @@
             this.customPriorityField.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.customPriorityField.FormattingEnabled = true;
             this.customPriorityField.Location = new System.Drawing.Point(231, 105);
-            this.customPriorityField.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.customPriorityField.Margin = new System.Windows.Forms.Padding(4);
             this.customPriorityField.Name = "customPriorityField";
             this.customPriorityField.Size = new System.Drawing.Size(315, 24);
             this.customPriorityField.Sorted = true;
@@ -661,26 +683,16 @@
             this.customPriorityNote.TabIndex = 22;
             this.customPriorityNote.Text = "Some organisations define their own unique prioritisation listing for bugs.";
             // 
-            // dataGridViewTextBoxColumn1
+            // TellMeMore
             // 
-            this.dataGridViewTextBoxColumn1.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Info;
-            dataGridViewCellStyle4.ForeColor = System.Drawing.Color.Black;
-            this.dataGridViewTextBoxColumn1.DefaultCellStyle = dataGridViewCellStyle4;
-            this.dataGridViewTextBoxColumn1.FillWeight = 50F;
-            this.dataGridViewTextBoxColumn1.HeaderText = "TFS Field";
-            this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
-            this.dataGridViewTextBoxColumn1.ReadOnly = true;
-            this.dataGridViewTextBoxColumn1.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridViewTextBoxColumn1.Width = 97;
-            // 
-            // tfsFieldValueColumn
-            // 
-            this.tfsFieldValueColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.tfsFieldValueColumn.DisplayStyle = System.Windows.Forms.DataGridViewComboBoxDisplayStyle.ComboBox;
-            this.tfsFieldValueColumn.HeaderText = "Defaults to";
-            this.tfsFieldValueColumn.Name = "tfsFieldValueColumn";
-            this.tfsFieldValueColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.TellMeMore.AutoSize = true;
+            this.TellMeMore.Location = new System.Drawing.Point(25, 759);
+            this.TellMeMore.Name = "TellMeMore";
+            this.TellMeMore.Size = new System.Drawing.Size(106, 17);
+            this.TellMeMore.TabIndex = 29;
+            this.TellMeMore.TabStop = true;
+            this.TellMeMore.Text = "Tell me more ...";
+            this.TellMeMore.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.TellMeMore_LinkClicked);
             // 
             // AdvancedSettingsView
             // 
@@ -688,12 +700,13 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(739, 791);
+            this.Controls.Add(this.TellMeMore);
             this.Controls.Add(this.SaveBtn);
             this.Controls.Add(this.CancelBtn);
             this.Controls.Add(this.tabControl);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "AdvancedSettingsView";
@@ -717,6 +730,7 @@
             this.priorityPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.priorityGrid)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -766,5 +780,6 @@
         private System.Windows.Forms.DataGridViewComboBoxColumn maptoColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
         private System.Windows.Forms.DataGridViewComboBoxColumn tfsFieldValueColumn;
+        private System.Windows.Forms.LinkLabel TellMeMore;
     }
 }

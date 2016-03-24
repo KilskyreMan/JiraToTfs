@@ -48,7 +48,7 @@ namespace JiraToTfs
             catch (Exception ex)
             {
                 MessageBox.Show(
-                    "JiraToTfs threw an exception and needs to shut down.\nCheck log in Application folder for further details.");
+                    "JiraToTfs threw an exception and needs to shut down.\nCheck log (JiraToTfs.txt) in Application folder for further details.");
                 log.Error(ex.ToString());
             }
         }

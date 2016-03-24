@@ -126,192 +126,193 @@ namespace TicketImporter
                     }
                 }
 
-                if (FailedTickets.Count == 0)
+            if (FailedTickets.Count == 0)
+            {
+                setCurrentAction(String.Format("Creating {0} tickets", ticketTarget.Target));
+                var progressNotifer = new ProgressNotifier(onPercentComplete, passedTickets.Count);
+                foreach (var passedTicket in passedTickets)
                 {
-                    setCurrentAction(String.Format("Creating {0} tickets", ticketTarget.Target));
-                    var progressNotifer = new ProgressNotifier(onPercentComplete, passedTickets.Count);
-                    foreach (var passedTicket in passedTickets)
-                    {
-                        if (includeAttachments)
-                        {
-                            clearDownloadFolder();
-                            ticketSource.DownloadAttachments(passedTicket, downloadFolder);
-                        }
-                        else
-                        {
-                            passedTicket.Attachments.Clear();
-                        }
-                        ticketTarget.AddTicket(passedTicket);
-                        progressNotifer.UpdateProgress();
-                    }
-
-                    setCurrentAction(String.Format("Updating {0} tickets", ticketTarget.Target));
-                    ticketTarget.EndImport();
-
                     if (includeAttachments)
                     {
                         clearDownloadFolder();
-                        Directory.Delete(downloadFolder);
+                        ticketSource.DownloadAttachments(passedTicket, downloadFolder);
                     }
-
-                    setCurrentAction("Import complete.");
+                    else
+                    {
+                        passedTicket.Attachments.Clear();
+                    }
+                    ticketTarget.AddTicket(passedTicket);
+                    progressNotifer.UpdateProgress();
                 }
+
+                setCurrentAction(String.Format("Updating {0} tickets", ticketTarget.Target));
+                ticketTarget.EndImport();
+
+                if (includeAttachments)
+                {
+                    clearDownloadFolder();
+                    Directory.Delete(downloadFolder);
+                }
+
+                setCurrentAction("Import complete.");
             }
         }
-
-        public string GenerateReport()
-        {
-            var summary = ImportSummary;
-            string reportPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
-                reportName = string.Format("{0}to{1}_Report.txt", SourceName, TargetName),
-                fullPath = Path.Combine(reportPath, reportName);
-            using (var file = new StreamWriter(fullPath, false))
-            {
-                file.WriteLine("=======");
-                file.WriteLine("Summary");
-                file.WriteLine("=====================================================");
-                file.WriteLine("Started on  : {0}", summary.Start);
-                file.WriteLine("Finished on : {0}", summary.End);
-                file.WriteLine("");
-
-                var targetDetails = ticketTarget.Target + " Details";
-                file.WriteLine(targetDetails);
-                file.WriteLine(new String('-', targetDetails.Length));
-                foreach (var detail in ticketTarget.ImportSummary.TargetDetails)
-                {
-                    file.WriteLine("* {0}", detail);
-                }
-                file.WriteLine("");
-
-                long totalOpen = 0;
-                var openBreakDown = "";
-                if (summary.OpenTickets.Count > 0)
-                {
-                    openBreakDown = "Open Tickets:" + Environment.NewLine;
-                    openBreakDown += "-------------" + Environment.NewLine;
-                    foreach (var openTicket in summary.OpenTickets)
-                    {
-                        openBreakDown += string.Format("{0}s\t : {1}", openTicket.Key, openTicket.Value) +
-                                         Environment.NewLine;
-                        totalOpen += openTicket.Value;
-                    }
-                    file.WriteLine("");
-                }
-
-                file.WriteLine("Imported:");
-                file.WriteLine("---------");
-                file.WriteLine("Open         : {0}", totalOpen);
-                file.WriteLine("Closed       : {0}", summary.Imported - totalOpen);
-                if (summary.Errors.Count > 0)
-                {
-                    file.WriteLine("Not imported : {0}", summary.Errors.Count);
-                }
-                file.WriteLine("           {0}", new string('-', summary.Imported.ToString().Length));
-                file.WriteLine("Total    : {0}", summary.Imported);
-                file.WriteLine("");
-
-                file.WriteLine(openBreakDown);
-
-                if (summary.PreviouslyImported > 0)
-                {
-                    file.WriteLine("Previously Imported : {0}", summary.PreviouslyImported);
-                }
-
-                if (summary.Errors.Count > 0)
-                {
-                    file.WriteLine("========");
-                    file.WriteLine("Errors:");
-                    file.WriteLine("=====================================================");
-                    file.WriteLine("");
-                    foreach (var error in summary.Errors)
-                    {
-                        file.WriteLine(error);
-                    }
-                    file.WriteLine("");
-                }
-
-                if (summary.Warnings.Count > 0)
-                {
-                    file.WriteLine("=========");
-                    file.WriteLine("Warnings:");
-                    file.WriteLine("=====================================================");
-                    file.WriteLine("");
-                    foreach (var warning in summary.Warnings)
-                    {
-                        file.WriteLine(warning);
-                    }
-                    file.WriteLine("");
-                }
-
-                if (summary.Notes.Count > 0)
-                {
-                    file.WriteLine("======");
-                    file.WriteLine("Notes:");
-                    file.WriteLine("=====================================================");
-                    file.WriteLine("");
-                    foreach (var note in summary.Notes)
-                    {
-                        file.WriteLine("* " + note);
-                    }
-                    file.WriteLine("");
-                }
-            }
-            return fullPath;
-        }
-
-        #region private members
-
-        private TicketImportAgent()
-        {
-        }
-
-        private readonly ITicketSource ticketSource;
-        private readonly ITicketTarget ticketTarget;
-        private string currentAction;
-        private DetailedProcessing detailedProcessing;
-        private List<Ticket> passedTickets;
-        private readonly bool includeAttachments;
-        private readonly string downloadFolder;
-
-        private static readonly ILog log = LogManager.GetLogger
-            (MethodBase.GetCurrentMethod().DeclaringType);
-
-        #endregion
-
-        #region Progress & log Helpers
-
-        private void updateProgress(string Action, int percentComplete)
-        {
-            if (ReportProgress != null)
-            {
-                ReportProgress(Action, percentComplete);
-            }
-        }
-
-        private void onPercentComplete(int percentComplete)
-        {
-            updateProgress(currentAction, percentComplete);
-        }
-
-        public Report ReportProgress { set; get; }
-
-        public DetailedProcessing OnDetailedProcessing
-        {
-            set
-            {
-                detailedProcessing = value;
-                ticketSource.OnDetailedProcessing += value;
-                ticketTarget.OnDetailedProcessing += value;
-            }
-            get { return detailedProcessing; }
-        }
-
-        private void setCurrentAction(string currentAction)
-        {
-            this.currentAction = currentAction;
-            log.Info(currentAction);
-        }
-
-        #endregion
-    }
 }
+
+public string GenerateReport()
+{
+var summary = ImportSummary;
+string reportPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
+reportName = string.Format("{0}to{1}_Report.txt", SourceName, TargetName),
+fullPath = Path.Combine(reportPath, reportName);
+using (var file = new StreamWriter(fullPath, false))
+{
+file.WriteLine("=======");
+file.WriteLine("Summary");
+file.WriteLine("=====================================================");
+file.WriteLine("Started on  : {0}", summary.Start);
+file.WriteLine("Finished on : {0}", summary.End);
+file.WriteLine("");
+
+var targetDetails = ticketTarget.Target + " Details";
+file.WriteLine(targetDetails);
+file.WriteLine(new String('-', targetDetails.Length));
+foreach (var detail in ticketTarget.ImportSummary.TargetDetails)
+{
+    file.WriteLine("* {0}", detail);
+}
+file.WriteLine("");
+
+long totalOpen = 0;
+var openBreakDown = "";
+if (summary.OpenTickets.Count > 0)
+{
+    openBreakDown = "Open Tickets:" + Environment.NewLine;
+    openBreakDown += "-------------" + Environment.NewLine;
+    foreach (var openTicket in summary.OpenTickets)
+    {
+        openBreakDown += string.Format("{0}s\t : {1}", openTicket.Key, openTicket.Value) +
+                         Environment.NewLine;
+        totalOpen += openTicket.Value;
+    }
+    file.WriteLine("");
+}
+
+file.WriteLine("Imported:");
+file.WriteLine("---------");
+file.WriteLine("Open         : {0}", totalOpen);
+file.WriteLine("Closed       : {0}", summary.Imported - totalOpen);
+if (summary.Errors.Count > 0)
+{
+    file.WriteLine("Not imported : {0}", summary.Errors.Count);
+}
+file.WriteLine("           {0}", new string('-', summary.Imported.ToString().Length));
+file.WriteLine("Total    : {0}", summary.Imported);
+file.WriteLine("");
+
+file.WriteLine(openBreakDown);
+
+if (summary.PreviouslyImported > 0)
+{
+    file.WriteLine("Previously Imported : {0}", summary.PreviouslyImported);
+}
+
+if (summary.Errors.Count > 0)
+{
+    file.WriteLine("========");
+    file.WriteLine("Errors:");
+    file.WriteLine("=====================================================");
+    file.WriteLine("");
+    foreach (var error in summary.Errors)
+    {
+        file.WriteLine(error);
+    }
+    file.WriteLine("");
+}
+
+if (summary.Warnings.Count > 0)
+{
+    file.WriteLine("=========");
+    file.WriteLine("Warnings:");
+    file.WriteLine("=====================================================");
+    file.WriteLine("");
+    foreach (var warning in summary.Warnings)
+    {
+        file.WriteLine(warning);
+    }
+    file.WriteLine("");
+}
+
+if (summary.Notes.Count > 0)
+{
+    file.WriteLine("======");
+    file.WriteLine("Notes:");
+    file.WriteLine("=====================================================");
+    file.WriteLine("");
+    foreach (var note in summary.Notes)
+    {
+        file.WriteLine("* " + note);
+    }
+    file.WriteLine("");
+}
+}
+return fullPath;
+}
+
+#region private members
+
+private TicketImportAgent()
+{
+}
+
+private readonly ITicketSource ticketSource;
+private readonly ITicketTarget ticketTarget;
+private string currentAction;
+private DetailedProcessing detailedProcessing;
+private List<Ticket> passedTickets;
+private readonly bool includeAttachments;
+private readonly string downloadFolder;
+
+private static readonly ILog log = LogManager.GetLogger
+(MethodBase.GetCurrentMethod().DeclaringType);
+
+#endregion
+
+#region Progress & log Helpers
+
+private void updateProgress(string Action, int percentComplete)
+{
+if (ReportProgress != null)
+{
+ReportProgress(Action, percentComplete);
+}
+}
+
+private void onPercentComplete(int percentComplete)
+{
+updateProgress(currentAction, percentComplete);
+}
+
+public Report ReportProgress { set; get; }
+
+public DetailedProcessing OnDetailedProcessing
+{
+set
+{
+detailedProcessing = value;
+ticketSource.OnDetailedProcessing += value;
+ticketTarget.OnDetailedProcessing += value;
+}
+get { return detailedProcessing; }
+}
+
+private void setCurrentAction(string currentAction)
+{
+this.currentAction = currentAction;
+log.Info(currentAction);
+}
+
+#endregion
+}
+}
+ 

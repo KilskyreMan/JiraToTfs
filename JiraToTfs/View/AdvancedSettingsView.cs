@@ -307,5 +307,10 @@ namespace JiraToTfs.View
         }
 
         #endregion
+
+        private void TellMeMore_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Process.Start("https://github.com/KilskyreMan/JiraToTfs/wiki#advanced-settings");
+        }
     }
 }

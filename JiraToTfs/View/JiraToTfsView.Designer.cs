@@ -60,9 +60,14 @@
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.pleaseWaitSpinner = new System.Windows.Forms.PictureBox();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
+            this.noUsersPanel = new System.Windows.Forms.Panel();
+            this.pictureBox2 = new System.Windows.Forms.PictureBox();
+            this.noUsersAssignedLink = new System.Windows.Forms.LinkLabel();
             this.impersonationPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pleaseWaitSpinner)).BeginInit();
+            this.noUsersPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.SuspendLayout();
             // 
             // ImportBtn
@@ -334,7 +339,7 @@
             this.impersonationPanel.Location = new System.Drawing.Point(145, 297);
             this.impersonationPanel.Margin = new System.Windows.Forms.Padding(4);
             this.impersonationPanel.Name = "impersonationPanel";
-            this.impersonationPanel.Size = new System.Drawing.Size(337, 22);
+            this.impersonationPanel.Size = new System.Drawing.Size(336, 22);
             this.impersonationPanel.TabIndex = 27;
             this.impersonationPanel.Visible = false;
             // 
@@ -344,9 +349,9 @@
             this.label11.Location = new System.Drawing.Point(121, 2);
             this.label11.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(91, 17);
+            this.label11.Size = new System.Drawing.Size(87, 17);
             this.label11.TabIndex = 30;
-            this.label11.Text = "not enabled. ";
+            this.label11.Text = "not enabled.";
             // 
             // impersonationLink
             // 
@@ -395,6 +400,40 @@
             this.linkLabel1.Text = "Tell me more ...";
             this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnClickTellMeMore);
             // 
+            // noUsersPanel
+            // 
+            this.noUsersPanel.Controls.Add(this.noUsersAssignedLink);
+            this.noUsersPanel.Controls.Add(this.pictureBox2);
+            this.noUsersPanel.Location = new System.Drawing.Point(145, 297);
+            this.noUsersPanel.Margin = new System.Windows.Forms.Padding(4);
+            this.noUsersPanel.Name = "noUsersPanel";
+            this.noUsersPanel.Size = new System.Drawing.Size(337, 22);
+            this.noUsersPanel.TabIndex = 31;
+            this.noUsersPanel.Visible = false;
+            // 
+            // pictureBox2
+            // 
+            this.pictureBox2.Image = global::JiraToTfs.Properties.Resources.info;
+            this.pictureBox2.Location = new System.Drawing.Point(4, 1);
+            this.pictureBox2.Margin = new System.Windows.Forms.Padding(4);
+            this.pictureBox2.Name = "pictureBox2";
+            this.pictureBox2.Size = new System.Drawing.Size(18, 18);
+            this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
+            this.pictureBox2.TabIndex = 28;
+            this.pictureBox2.TabStop = false;
+            // 
+            // noUsersAssignedLink
+            // 
+            this.noUsersAssignedLink.AutoSize = true;
+            this.noUsersAssignedLink.Location = new System.Drawing.Point(27, 2);
+            this.noUsersAssignedLink.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.noUsersAssignedLink.Name = "noUsersAssignedLink";
+            this.noUsersAssignedLink.Size = new System.Drawing.Size(277, 17);
+            this.noUsersAssignedLink.TabIndex = 32;
+            this.noUsersAssignedLink.TabStop = true;
+            this.noUsersAssignedLink.Text = "No users assigned to selected TFS Project";
+            this.noUsersAssignedLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.noUsersAssignedLink_LinkClicked);
+            // 
             // JiraToTfsView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -402,6 +441,7 @@
             this.BackColor = System.Drawing.SystemColors.Control;
             this.CancelButton = this.CloseBtn;
             this.ClientSize = new System.Drawing.Size(603, 580);
+            this.Controls.Add(this.noUsersPanel);
             this.Controls.Add(this.linkLabel1);
             this.Controls.Add(this.impersonationPanel);
             this.Controls.Add(this.viewReport);
@@ -443,6 +483,9 @@
             this.impersonationPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pleaseWaitSpinner)).EndInit();
+            this.noUsersPanel.ResumeLayout(false);
+            this.noUsersPanel.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -481,5 +524,8 @@
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.LinkLabel linkLabel1;
+        private System.Windows.Forms.Panel noUsersPanel;
+        private System.Windows.Forms.LinkLabel noUsersAssignedLink;
+        private System.Windows.Forms.PictureBox pictureBox2;
     }
 }

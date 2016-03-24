@@ -101,6 +101,11 @@ namespace TicketImporter
             get { return canImpersonate; }
         }
 
+        public int Count
+        {
+            get { return tfsUsers.Count(); }
+        }
+
         public List<User> FailedImpersonations
         {
             get { return failedImpersonations.ToList(); }
@@ -145,7 +150,7 @@ namespace TicketImporter
         private TeamFoundationIdentity getId(string tfsUser)
         {
             TeamFoundationIdentity id = null;
-            if (String.IsNullOrEmpty(tfsUser) == false)
+            if (string.IsNullOrEmpty(tfsUser) == false)
             {
                 var ims = tfsProject.Tfs.GetService<IIdentityManagementService>();
                 id = ims.ReadIdentity(IdentitySearchFactor.AccountName, tfsUser, MembershipQuery.None,
@@ -161,7 +166,11 @@ namespace TicketImporter
 
         public TfsTeamProjectCollection ImpersonateDefaultCreator()
         {
-            return Impersonate(new User(defaultCreator, defaultCreator, ""));
+            if (string.IsNullOrEmpty(defaultCreator) == false)
+            {
+                return Impersonate(new User(defaultCreator, defaultCreator, ""));
+            }
+            return tfsProject.Tfs;
         }
 
         public bool CanAddTicket(User toCheck)
@@ -196,12 +205,12 @@ namespace TicketImporter
                         if (impersonated_User == null)
                         {
                             var tfsUser = defaultCreator;
-                            foreach (var windowsUser in tfsUsers)
+                            foreach (var user in tfsUsers)
                             {
-                                if (userToImpersonate.IsSameUser(windowsUser.GetAttribute("Mail", ""))
-                                    || userToImpersonate.IsSameUser(windowsUser.DisplayName))
+                                if (userToImpersonate.IsSameUser(user.GetAttribute("Mail", ""))
+                                    || userToImpersonate.IsSameUser(user.DisplayName))
                                 {
-                                    tfsUser = windowsUser.DisplayName;
+                                    tfsUser = user.DisplayName;
                                     break;
                                 }
                             }
@@ -209,9 +218,19 @@ namespace TicketImporter
                             var toImpersonate = getId(tfsUser);
                             if (toImpersonate != null)
                             {
-                                impersonated_User = new TfsTeamProjectCollection(tfsProject.Tfs.Uri,
-                                    toImpersonate.Descriptor);
-                                impersonated_Users[userToImpersonate] = impersonated_User;
+                                impersonated_User = new TfsTeamProjectCollection(tfsProject.Tfs.Uri, toImpersonate.Descriptor);
+                                var workItemStore = (WorkItemStore)impersonated_User.GetService(typeof(WorkItemStore));
+
+                                if (workItemStore.Projects[tfsProject.Project].HasWorkItemWriteRights == true)
+                                {
+                                    impersonated_Users[userToImpersonate] = impersonated_User;
+                                }
+                                else if (OnFailedToImpersonate != null)
+                                {
+                                    OnFailedToImpersonate(
+                                        string.Format("Failed to impersonate '{0}'. (This person does not have rights to create work items in TFS.)", userToImpersonate.DisplayName));
+                                    return tfsProject.Tfs;
+                                }
                             }
                         }
                     }
@@ -267,15 +286,55 @@ namespace TicketImporter
         {
             try
             {
-                var idService = tfs.GetService<IIdentityManagementService>();
-                var collectionWideValidUsers = idService.ReadIdentity(IdentitySearchFactor.DisplayName,
-                                                                      "Project Collection Valid Users",
-                                                                      MembershipQuery.Expanded,
-                                                                      ReadIdentityOptions.None);
-                var validMembers = idService.ReadIdentities(collectionWideValidUsers.Members,
-                                                            MembershipQuery.Expanded,
-                                                            ReadIdentityOptions.ExtendedProperties);
-                return validMembers.Where(_ => !_.IsContainer && _.Descriptor.IdentityType != "Microsoft.TeamFoundation.UnauthenticatedIdentity").ToArray();
+                IIdentityManagementService ims = tfs.GetService<IIdentityManagementService>();
+
+                TeamFoundationIdentity[] projectGroups = ims.ListApplicationGroups(tfsProject.Project, ReadIdentityOptions.None);
+                Dictionary<IdentityDescriptor, object> descSet = new Dictionary<IdentityDescriptor, object>(IdentityDescriptorComparer.Instance);
+                foreach (TeamFoundationIdentity projectGroup in projectGroups)
+                {
+                    descSet[projectGroup.Descriptor] = projectGroup.Descriptor;
+                }
+                projectGroups = ims.ReadIdentities(descSet.Keys.ToArray(), MembershipQuery.Expanded, ReadIdentityOptions.None);
+
+                foreach (TeamFoundationIdentity projectGroup in projectGroups)
+                {
+                    foreach (IdentityDescriptor mem in projectGroup.Members)
+                    {
+                        descSet[mem] = mem;
+                    }
+                }
+
+                TeamFoundationIdentity[] identities = new TeamFoundationIdentity[0];
+                int batchSizeLimit = 100000;
+                var descriptors = descSet.Keys.ToArray();
+
+                if (descriptors.Length > batchSizeLimit)
+                {
+                    int batchNum = 0;
+                    int remainder = descriptors.Length;
+                    IdentityDescriptor[] batchDescriptors = new IdentityDescriptor[batchSizeLimit];
+
+                    while (remainder > 0)
+                    {
+                        int startAt = batchNum * batchSizeLimit;
+                        int length = batchSizeLimit;
+                        if (length > remainder)
+                        {
+                            length = remainder;
+                            batchDescriptors = new IdentityDescriptor[length];
+                        }
+
+                        Array.Copy(descriptors, startAt, batchDescriptors, 0, length);
+                        identities = ims.ReadIdentities(batchDescriptors, MembershipQuery.Direct, ReadIdentityOptions.None);
+                        remainder -= length;
+                    }
+                }
+                else
+                {
+                    identities = ims.ReadIdentities(descriptors, MembershipQuery.Direct, ReadIdentityOptions.None);
+                }
+
+                return identities.Where(_ => !_.IsContainer && _.Descriptor.IdentityType != "Microsoft.TeamFoundation.UnauthenticatedIdentity").ToArray();
             }
             catch
             {
