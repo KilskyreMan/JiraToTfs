@@ -230,18 +230,23 @@ namespace TicketImporter
 
         private string getProcessTemplateName(string project)
         {
-            var vcs = tfs.GetService<VersionControlServer>();
             var ics = tfs.GetService<ICommonStructureService>();
 
-            var p = vcs.GetTeamProject(project);
-            string projectName, projectState;
-            int templateId;
-            ProjectProperty[] projectProperties;
+            var projectInfo = ics.GetProjectFromName(project);
 
-            ics.GetProjectProperties(p.ArtifactUri.AbsoluteUri, out projectName, out projectState, out templateId,
-                out projectProperties);
+            if (projectInfo != null)
+            {
+                string projectName, projectState;
+                int templateId;
+                ProjectProperty[] projectProperties;
 
-            return projectProperties.Where(pt => pt.Name == "Process Template").Select(pt => pt.Value).FirstOrDefault();
+                ics.GetProjectProperties(projectInfo.Uri, out projectName, out projectState, out templateId,
+                    out projectProperties);
+
+                return projectProperties.Where(pt => pt.Name == "Process Template").Select(pt => pt.Value).FirstOrDefault();
+            }
+
+            return ("(Unable to determine)");
         }
 
         private void assignToField(WorkItem workItem, string fieldName, object value)

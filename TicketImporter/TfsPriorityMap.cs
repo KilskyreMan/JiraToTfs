@@ -77,7 +77,8 @@ namespace TicketImporter
                 {"Blocker", "1"},
                 {"Critical", "1"},
                 {"Major", "2"},
-                {"Minor", "3"},
+                {"Medium", "3" },
+                {"Minor", "4"},
                 {"Trivial", "4"}
             };
             SettingsStore.Save(key, map);
