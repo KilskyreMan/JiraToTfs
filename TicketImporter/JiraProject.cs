@@ -25,7 +25,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using RestSharp.Extensions;
+using System.Text;
 using TechTalk.JiraRestClient;
 using TicketImporter.Interface;
 using TrackProgress;
@@ -189,8 +189,8 @@ namespace TicketImporter
                 foreach (var attachment in ticket.Attachments)
                 {
                     onDetailedProcessing("Downloading " + attachment.FileName);
-                    var sourceUri = string.Format("{0}?&os_username={1}&os_password={2}",
-                        attachment.Source, userName, password);
+                    var credentials = Convert.ToBase64String(Encoding.ASCII.GetBytes(userName + ":" + password));
+                    var sourceUri = attachment.Source;
                     string name = Path.GetFileNameWithoutExtension(attachment.FileName),
                         extension = Path.GetExtension(attachment.FileName),
                         downloadedName = attachment.FileName;
@@ -207,6 +207,7 @@ namespace TicketImporter
                     try
                     {
                         var downloadTo = Path.Combine(downloadFolder, downloadedName);
+                        webClient.Headers[HttpRequestHeader.Authorization] = string.Format("Basic {0}", credentials);
                         webClient.DownloadFile(new Uri(sourceUri), downloadTo);
                         attachment.Source = downloadTo;
                         attachment.FileName = downloadedName;
